@@ -1,0 +1,25 @@
+{
+    "name": "ccl",
+    "displayName": "Cerner Command Language (CCL)",
+    "description": "CCL support for Visual Studio Code",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.28.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "ccl",
+            "aliases": ["CCL", "ccl"],
+            "extensions": [".ccl",".prg"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "ccl",
+            "scopeName": "source.ccl",
+            "path": "./syntaxes/ccl.tmLanguage.json"
+        }]
+    }
+}

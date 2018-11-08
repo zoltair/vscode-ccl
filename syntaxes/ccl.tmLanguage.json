@@ -1,0 +1,91 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "CCL",
+    "scopeName": "source.ccl",
+    "uuid": "B8887E40-CC80-11E3-9C1A-0800200C9A66",
+    "patterns": [
+        { "include": "#comments" },
+        { "include": "#strings"  }
+    ],
+    "repository": {
+        "comments" :
+        {
+            "patterns": [
+                {
+                    "comment": "Single-line comment (semicolon)",
+                    "name": "comment.line.semicolon.ccl",
+                    "match": ";.*"
+                },
+                {
+                    "comment": "Single-line comment (exclamation mark)",
+                    "name": "comment.line.exclamation-mark.ccl",
+                    "match": "!(?!=).*"
+                },
+                {
+                    "comment": "Block comment",
+                    "name": "comment.line.semicolon.ccl",
+                    "begin": "/\\*",
+                    "end": "\\*/"
+                }
+            ]
+        },
+        "strings" : {
+            "patterns": [
+                {
+                    "comment": "String (single quotation marks)",
+                    "name": "string.quoted.single.ccl",
+                    "begin": "'",
+                    "end": "'",
+                    "patterns": [
+                        { "include": "#character_escape" }
+                    ]
+                },
+                {
+                    "comment": "String (double quotation marks)",
+                    "name": "string.quoted.double.ccl",
+                    "begin": "\"",
+                    "end": "\"",
+                    "patterns": [
+                        { "include": "#character_escape" }
+                    ]
+                },
+                {
+                    "comment": "String (caret/circumflex accent)",
+                    "name": "string.quoted.other.ccl",
+                    "begin": "^",
+                    "end": "^",
+                    "patterns": [
+                        { "include": "#character_escape" }
+                    ]
+                },
+                {
+                    "comment": "String (tilde)",
+                    "name": "string.quoted.other.ccl",
+                    "begin": "~",
+                    "end": "~",
+                    "patterns": [
+                        { "include": "#character_escape" }
+                    ]
+                },
+                {
+                    "comment": "String (vertical line)",
+                    "name": "string.quoted.other.ccl",
+                    "begin": "\\|",
+                    "end": "\\|",
+                    "patterns": [
+                        { "include": "#character_escape" }
+                    ]
+                }
+            ]
+        },
+        "character_escape" : {
+            "patterns": [
+                {
+                    "comment": "Character escape",
+                    "name": "constant.character.escape.ccl",
+                    "match": "\\\\."
+                }
+            ]
+        }
+    }
+}
