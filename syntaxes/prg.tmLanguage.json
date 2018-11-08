@@ -1,0 +1,354 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "CCL",
+	"patterns":
+	[
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#types"
+		},
+		{
+			"include": "#reserved"
+		},
+		{
+			"include": "#comments"
+		}
+	],
+	"repository":
+	{
+		"keywords":
+		{
+			"patterns":
+			[
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(and)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(between|browse|by)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(call|case|cclclass|cclmenu|ccltam|ccluser|commit|create)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(database|ddlrecord|declare|define|delete|detail|distinct|drop)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(ekmodule|else|elseif|end|endcase|endfor|endif|endmacro|endwhile|execute|exists|exit)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(foot|for|foreign|free|from)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(genlink|generate|glossary|go|grant|graph|grelement|grline)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(having|head)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(join)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(key)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(like)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(macro)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(not)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(of|on|or|order|orjoin)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(page|paint|plan|program|prompt)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(range|rdb|read|record|redefines|ref|report|reset|return|revoke|rollback)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(select|set|subroutine)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(table|to)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(union|unique|update)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(value|view)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(where|while|with|write)\\b"
+				},
+				{
+					"name": "keyword.control.prg",
+					"match": "\\b(if|in|insert|into|is)\\b"
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": "\\+"
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": "-"
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": "="
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": "%"
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": "&"
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": ">"
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": "<"
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": "\\^"
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": "!"
+				},
+				{
+					"name": "keyword.operator.prg",
+					"match": "\\|"
+				}
+			]
+		},
+		"types":
+		{
+			"patterns":
+			[
+				{
+					"name": "storage.type.prg",
+					"match": "\\b(c1|c15|c16|c32|c64|c128|c256|c500|c32000)\\b"
+				},
+				{
+					"name": "storage.type.prg",
+					"match": "\\b(dq8)\\b"
+				},
+				{
+					"name": "storage.type.prg",
+					"match": "\\b(gvc)\\b"
+				},
+				{
+					"name": "storage.type.prg",
+					"match": "\\b(i1|i2|i4)\\b"
+				},
+				{
+					"name": "storage.type.prg",
+					"match": "\\b(f8)\\b"
+				},
+				{
+					"name": "storage.type.prg",
+					"match": "\\b(q8)\\b"
+				},
+				{
+					"name": "storage.type.prg",
+					"match": "\\b(vc)\\b"
+				}
+			]
+		},
+		"reserved":
+		{
+			"patterns":
+			[
+				{
+					"name": "reserved.variable.prg",
+					"match": "\\b(col|curaccept|curbatch|curbedrock|curcclrev|curclientid|curclk|curdate|curecho|curendreport|curenv|curgroup|curhelp|curimage|curlocale|curmem|curnode|curpage|curprcname|curprogram|curqual|currdb|currdbhandle|currdblink|currdbname|currdbsys|currdbuser|curreturn|currev|currevminor|currevminor2|curscroll|curserver|cursource|cursys|curtime|curtime2|curtime3|curtimezone|curtimezoneapp|curtimezonesys|curuser|curutc|curutcdiff|curwork)\\b"
+				},
+				{
+					"name": "reserved.variable.prg",
+					"match": "\\b(maxcol|maxrow)\\b"
+				},
+				{
+					"name": "reserved.variable.prg",
+					"match": "\\b(row)\\b"
+				},
+				{
+					"name": "reserved.variable.prg",
+					"match": "\\b(sysdate)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(abs|aggregate|alter|alterlist|asis|assign|assign2|assign3|avg)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(band|bnot|bor|btest|build|build2|bxor)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(calcpos|callprg|ceil|char|check|checkprg|checkqueue|cnvtacc|cnvtage|cnvtagedatetime|cnvtalias|cnvtalphanum|cnvtb10b16|cnvtb10b36|cnvtb16b10|cnvtb36b10|cnvtcap)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(cnvtdate|cnvtdatetime|cnvtdatetime2|cnvtdatetimeutc|cnvthexraw|cnvtint|cnvtlookahead|cnvtlookbehind|cnvtlower|cnvtmin|cnvtmin2|cnvtnlssort|cnvtphone|cnvtrawhex)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(cnvtreal|cnvtstring|cnvttime|cnvttime|cnvtupper|common|concat|cost|count)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(datetimeadd|datetimecmp|datetimediff|datetimefind|datetimezone|datetimezonebyindex|datetimezonebyname|datetimezoneformat|day|decode)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(echo|echorecord|error|evaluate|even|exp|expand)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(fillstring|findfile|findstring|floor|format)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(greatest)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(hour)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(ichar|initarray|isnumeric)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(julian)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(least|locateval|log|log10|logical)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(max|maxval|median|memalloc|memfree|memrealloc|min|minute|minval|mod|modcheck|month|moverec|movestring)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(negate|notrim|nullcheck|nullind|mullterm|nullval)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(operator)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(parameter|parser|patstring|percent)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(rand|reflect|remove|replace|reportinfo|reportmove|reportrow|round)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(selectivity|seq|size|sort|sound|soundex|sqlpassthru|stddev|substring|sum)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(text|textlen|trim)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(validate|variance)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(weekday|wtmodcheck)\\b"
+				},
+				{
+					"name": "reserved.function.prg",
+					"match": "\\b(year)\\b"
+				}
+			]
+		},
+		"comments":
+		{
+			"patterns":
+			[
+				{
+					"name": "comment.singleline.prg",
+					"match": "[;]+.*"
+				},
+				{
+					"name": "comment.multiline.prg",
+					"begin": "\\/\\*",
+					"end": "\\*\\/"
+				}
+			]
+		},
+		"strings":
+		{
+			"patterns":
+			[
+				{
+					"name": "string.quoted.single.prg",
+					"begin": "'",
+					"end": "'",
+					"patterns":
+					[
+						{
+							"name": "constant.character.escape.prg",
+							"match": "\\\\."
+						}
+					]
+				},
+				{
+					"name": "string.quoted.double.prg",
+					"begin": "\"",
+					"end": "\"",
+					"patterns":
+					[
+						{
+							"name": "constant.character.escape.prg",
+							"match": "\\\\."
+						}
+					]
+				}
+			]
+			
+		}
+	},
+	"scopeName": "source.ccl"
+}
