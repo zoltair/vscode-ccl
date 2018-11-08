@@ -3,6 +3,7 @@
     "displayName": "Cerner Command Language (CCL)",
     "description": "CCL support for Visual Studio Code",
     "version": "0.0.1",
+    "publisher": "Justin J. Clark",
     "engines": {
         "vscode": "^1.28.0"
     },
