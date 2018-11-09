@@ -4,12 +4,15 @@
     "scopeName": "source.ccl",
     "uuid": "B8887E40-CC80-11E3-9C1A-0800200C9A66",
     "patterns": [
-        { "include": "#comments"  },
-        { "include": "#operators" },
-        { "include": "#datatypes" },
-        { "include": "#constants" },
-        { "include": "#variables" },
-        { "include": "#keywords"  }
+        { "include": "#comments"   },
+        { "include": "#directives" },
+        { "include": "#strings"    },
+        { "include": "#numbers"    },
+        { "include": "#datatypes"  },
+        { "include": "#system"     },
+        { "include": "#statments"  },
+        { "include": "#keywords"   },
+        { "include": "#functions"  }
     ],
     "repository": {
         "comments" :
@@ -33,40 +36,21 @@
                 }
             ]
         },
-        "operators" : {
+        "directives" : {
             "patterns": [
                 {
-                    "comment": "Operators (math and comparisons)",
-                    "name": "keyword.operator.ccl",
-                    "match": "(?:[\\-+/*<>=]|[!<>]?=)"
+                    "comment": "CLI Directives",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)^\\s*%(?:b|banner|c|clear|d|display|e|edit|h|help|i|include|j|journal|k|kedit|l|ledit|o|output|p|print|r|run|s|show|t|terminal|v|version|z)\\b"
+                },
+                {
+                    "comment": "Macro Directives",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)^\\s*%#(?:define|undef|ifdef|ifndef|else|endif)\\b"
                 }
             ]
         },
-        "datatypes" : {
-            "patterns": [
-                {
-                    "comment": "Data Types (integer)",
-                    "name": "entity.name.type.ccl",
-                    "match": "(?i)\\bu?(?:i1|i2|i4|w8)\\b"
-                },
-                {
-                    "comment": "Data Types (float)",
-                    "name": "entity.name.type.ccl",
-                    "match": "(?i)\\bf(?:4|8)\\b"
-                },
-                {
-                    "comment": "Data Types (string)",
-                    "name": "entity.name.type.ccl",
-                    "match": "(?i)\\bz?g?(?:c\\d+|vc(?:\\d+)?)\\b"
-                },
-                {
-                    "comment": "Data Types (datetime)",
-                    "name": "entity.name.type.ccl",
-                    "match": "(?i)\\b(dm12|dm14|dq8)\\b"
-                }
-            ]
-        },
-        "constants" : {
+        "strings" : {
             "patterns": [
                 {
                     "comment": "String (single quotation marks)",
@@ -112,25 +96,70 @@
                     "patterns": [
                         { "include": "#character_escape" }
                     ]
+                }
+            ],
+            "repository": {
+                "character_escape" : {
+                    "patterns": [
+                        {
+                            "comment": "Character escape",
+                            "name": "constant.character.escape.ccl",
+                            "match": "\\\\."
+                        }
+                    ]
+                }
+            }
+        },
+        "numbers" : {
+            "patterns": [
+                {
+                    "comment": "Number (integer)",
+                    "name": "constant.numeric.ccl",
+                    "match": "(?i)\\b\\d+(?:\\.w)?\\b"
                 },
                 {
-                    "comment": "Constant (integer)",
+                    "comment": "Number (float)",
                     "name": "constant.numeric.ccl",
-                    "match": "\\b\\d+\\.?(?:\\d+)?\\b"
+                    "match": "\\b\\d+\\.\\d+\\b"
                 }
             ]
         },
-        "character_escape" : {
+        "datatypes" : {
             "patterns": [
                 {
-                    "comment": "Character escape",
-                    "name": "constant.character.escape.ccl",
-                    "match": "\\\\."
+                    "comment": "Data Types (integer)",
+                    "name": "entity.name.type.ccl",
+                    "match": "(?i)\\bu?(?:i1|i2|i4|w8)\\b"
+                },
+                {
+                    "comment": "Data Types (float)",
+                    "name": "entity.name.type.ccl",
+                    "match": "(?i)\\bf(?:4|8)\\b"
+                },
+                {
+                    "comment": "Data Types (string)",
+                    "name": "entity.name.type.ccl",
+                    "match": "(?i)\\bz?g?(?:c\\d+|vc(?:\\d+)?)\\b"
+                },
+                {
+                    "comment": "Data Types (datetime)",
+                    "name": "entity.name.type.ccl",
+                    "match": "(?i)\\b(dm12|dm14|dq8)\\b"
                 }
             ]
         },
-        "variables" : {
+        "system" : {
             "patterns": [
+                {
+                    "comment": "Pseudo Table",
+                    "name": "support.class.table.ccl",
+                    "match": "(?i)\\b(?:dummyt)\\b"
+                },
+                {
+                    "comment": "Pseudo Column",
+                    "name": "support.class.column.ccl",
+                    "match": "(?i)\\b(?:seq)\\b"
+                },
                 {
                     "comment": "System Variables (Version Number)",
                     "name": "variable.language.ccl",
@@ -163,12 +192,12 @@
                 }
             ]
         },
-        "keywords" : {
+        "statements" : {
             "patterns": [
                 {
                     "comment": "Transaction Control Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:commit|rollback|go)\\b"
+                    "match": "(?i)\\b(?:commit|rollback|end|go)\\b"
                 },
                 {
                     "comment": "Access Control Statements",
@@ -176,29 +205,74 @@
                     "match": "(?i)\\b(?:grant|revoke)\\b"
                 },
                 {
-                    "comment": "Data Maniupulation Statements (SELECT, etc.)",
+                    "comment": "SELECT Statement",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:select(?:\\s+distinct)?|insert|update|merge|delete|union(?:\\s+all)?|minus|intersect)\\b"
+                    "match": "(?i)\\b(?:select(?:\\s+distinct)?)\\b"
                 },
                 {
-                    "comment": "Data Maniupulation Statements (SELECT clauses)",
+                    "comment": "SELECT UNION Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:into|from|plan|where|and|or|set|group\\s+by|having|order(?:\\s+by)?|with)\\b"
+                    "match": "(?i)\\b(?:union(?:\\s+all)?|minus|intersect)\\b"
                 },
                 {
-                    "comment": "Data Maniupulation Statements (JOIN clauses)",
+                    "comment": "INSERT Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:(?:(?:full|left|right|inner)\\s+)?join|orjoin)\\b"
+                    "match": "(?i)\\b(?:insert)\\b"
                 },
                 {
-                    "comment": "Data Maniupulation Statements (WITH clauses)",
+                    "comment": "UPDATE Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:append|archive|check|cpc|nocpc|compress|constraint|convert|counter|nocounter|crt|curdio|dio|dioduplex|diomargin|expand|filesort|format|noformat|formfeed|forms|noforms|forupdate|forupdatewait|heading|noheading|index|indexunique|landscape|nolandscape|maxcol|maxqual|maxread|maxrec|maxrow|memsort|mine|nullreport|orahint|orahintcbo|organization|owner|outerjoin|pcformat|pivot|preserve|nopreserve|print|rdbarrayfetch|rdbbindcons|nordbbindcons|rdbcboreparse|nordbcboreparse|rdbplan|rdbcbopluszero|nordbcbopluzero|rdbmsmisc|rdbrange|rdbunion|recsort|separator|size|skipbedrock|skiplogdomain|skipreport|sqltype|status|synonym|tablespace|test|time|version)\\b"
+                    "match": "(?i)\\b(?:update)\\b"
                 },
                 {
-                    "comment": "Data Maniupulation Statements (miscellaneous)",
+                    "comment": "MERGE Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:in|as|asc|desc)\\b"
+                    "match": "(?i)\\b(?:merge)\\b"
+                },
+                {
+                    "comment": "DELETE Statements",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:delete)\\b"
+                },
+                {
+                    "comment": "INTO Clause",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:into)\\b"
+                },
+                {
+                    "comment": "FROM Clause",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:from|(?:full|left|right|inner\\s+join|on)\\b"
+                },
+                {
+                    "comment": "PLAN Clause",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:plan|join|orjoin)\\b"
+                },
+                {
+                    "comment": "WHERE Clause",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:where|and|or|in)\\b"
+                },
+                {
+                    "comment": "GROUP BY Clause",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:group\\s+by)\\b"
+                },
+                {
+                    "comment": "HAVING Clause",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:having)\\b"
+                },
+                {
+                    "comment": "ORDER Clause",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:order(?:\\s+by)?|asc|desc)\\b"
+                },
+                {
+                    "comment": "WITH Clause",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:with|append|archive|check|cpc|nocpc|compress|constraint|convert|counter|nocounter|crt|curdio|dio|dioduplex|diomargin|expand|filesort|format|noformat|formfeed|forms|noforms|forupdate|forupdatewait|heading|noheading|index|indexunique|landscape|nolandscape|maxcol|maxqual|maxread|maxrec|maxrow|memsort|mine|nullreport|orahint|orahintcbo|organization|owner|outerjoin|pcformat|pivot|preserve|nopreserve|print|rdbarrayfetch|rdbbindcons|nordbbindcons|rdbcboreparse|nordbcboreparse|rdbplan|rdbcbopluszero|nordbcbopluzero|rdbmsmisc|rdbrange|rdbunion|recsort|separator|size|skipbedrock|skiplogdomain|skipreport|sqltype|status|synonym|tablespace|test|time|version)\\b"
                 },
                 {
                     "comment": "Create/Drop Program",
@@ -209,12 +283,30 @@
                         "3": { "name": "entity.name.function.ccl" },
                         "4": { "name": "entity.name.type" }
                     }
+                }
+            ]
+        },
+        "keywords" : {
+            "patterns": [
+                {
+                    "comment": "Program Flow Control (IF)",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:if|elseif|else|endif)\\b"
                 },
                 {
-                    "comment": "Program Flow Control",
+                    "comment": "Program Flow Control (CASE)",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:if|elseif|else|endif|while|endwhile|case|endcase|for|endfor)\\b"
+                    "match": "(?i)\\b(?:case|endcase)\\b"
                 },
+                {
+                    "comment": "Program Flow Control (FOR/WHILE)",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:for|endfor|while|endwhile)\\b"
+                }
+            ]
+        },
+        "functions" : {
+            "patterns": [
                 {
                     "comment": "Aggregate Functions",
                     "name": "support.function.ccl",
@@ -324,6 +416,11 @@
                     "comment": "UAR Functions (A-Z)",
                     "name": "support.function.ccl",
                     "match": "(?i)\\b(?:uar_get_code_by|uar_get_code_description|uar_get_code_display|uar_get_code_meaning|uar_get_meaning_by_codeset)\\b"
+                },
+                {
+                    "comment": "CALL Functions",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\bCALL\\s*(?:accept|box|cancel|cclexception|center|clear|compile|dcl|debug|echo|echojson|echorecord|echoxml|edit|line|parser|pause|print|printimage|scrolldown|scrollup|scrollinit|scrolltext|text|trace|video)\\b"
                 }
             ]
         }
