@@ -10,9 +10,9 @@
         { "include": "#numbers"    },
         { "include": "#datatypes"  },
         { "include": "#system"     },
-        { "include": "#statments"  },
         { "include": "#keywords"   },
-        { "include": "#functions"  }
+        { "include": "#functions"  },
+        { "include": "#statements" }
     ],
     "repository": {
         "comments" :
@@ -192,6 +192,144 @@
                 }
             ]
         },
+        "keywords" : {
+            "patterns": [
+                {
+                    "comment": "Program Flow Control (IF)",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:if|elseif|else|endif)\\b"
+                },
+                {
+                    "comment": "Program Flow Control (CASE)",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:case|endcase)\\b"
+                },
+                {
+                    "comment": "Program Flow Control (FOR/WHILE)",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:for|endfor|while|endwhile)\\b"
+                }
+            ]
+        },
+        "functions" : {
+            "patterns": [
+                {
+                    "comment": "Aggregate Functions",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:avg|count|cube|max|median|min|percent|rollup|stddev|sum|variance)\\b"
+                },
+                {
+                    "comment": "Bitwise Functions",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:band|bnot|bor|btest|bxor)\\b"
+                },
+                {
+                    "comment": "Math Functions",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:abs|ceil|even|exp|floor|greatest|least|log|log10|maxval|minval|mod|rand)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (A-B)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:aesdecryptfile|aesencryptfile|alter|alter2|alterlist|asis|assign|assign2|assign3)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (C)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:calcpos|callprg|cclfmt|cclio|char|check|checkdic|checkfun|checkprg|checkqueue|cost|curcodecover|curprog)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (CNVT)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:cnvtacc|cnvtalias|cnvtalphanum|cnvtbool|cnvtb10B16|cnvtb10b36|cnvtb16b10|cnvtb36b10|cnvthexraw|cnvtint|cnvtjsontorec|cnvtphone|cnvtrawhex|cnvtreal|cnvtrectoxml|cnvtrectojson|cnvtxmltorec)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (D-I)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:decode|error|evaluate|evaluate2|expand|findfile|ichar|initarray|initrec|isnumeric)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (L)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:list|locateval|locatevalsort|logical)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (M)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:maxrec|memalloc|memfree|memrealloc|modcheck|modify|moverec|movereclist)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (N)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:negate|nordbbind|null|nullcheck|nullind|nullterm|nullval)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (O)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:operator|outerjoin)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (P)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:parameter|parameter2|parser|percentile|proxyuser)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (R)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:rdbbind|reflect|remove|renamerec|reportinfo|reportmove|reportrow|round)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (S)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:selectivity|seq|size|sort|sortsearch|sound|soundex|sqlpassthru)\\b"
+                },
+                {
+                    "comment": "Miscellaneous Functions (T-Z)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:tdbexecute|text|textlen|trace|type|validate|value|wtmodcheck)\\b"
+                },
+                {
+                    "comment": "String Functions (A-B)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:aesdecrypt|aesencrypt|blobget|blobgetlen|build|build2|build2chk)\\b"
+                },
+                {
+                    "comment": "String Functions (C-E)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:cnvtcap|cnvtlower|cnvtnls|cnvtnlssort|cnvtstring|cnvtstringchk|cnvtupper|concat|curfile|curlocale)\\b"
+                },
+                {
+                    "comment": "String Functions (F-Z)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:fillstring|findstring|format|movestring|notrim|nopatstring|patstring|piece|replace|substring|text|trim|trimbind)\\b"
+                },
+                {
+                    "comment": "Datetime Functions (CNVT)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:cnvtage|cnvtage2|cnvtagedatetime|cnvtdate|cnvtdate2|cnvtdatetime|cnvtdatetime2|cnvtdatetimerdb|cnvtdatetimeutc|cnvtdatetimeutc2|cnvtlookahead|cnvtlookbehind|cnvtmin|cnvtmin2|cnvttime|cnvttime2|cnvttimestamp)\\b"
+                },
+                {
+                    "comment": "Datetime Functions (DATETIME)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:datetimeadd|datetimecmp|datetimecmputc|datetimediff|datetimefind|datetimepart|datetimetrunc|datetimezone|datetimezonebyindex|datetimezonebyname|datetimezoneformat)\\b"
+                },
+                {
+                    "comment": "Datetime Functions (A-Z)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:day|hour|julian|minute|month|utc|weekday|year)\\b"
+                },
+                {
+                    "comment": "UAR Functions (A-Z)",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\b(?:uar_get_code_by|uar_get_code_description|uar_get_code_display|uar_get_code_meaning|uar_get_meaning_by_codeset)\\b"
+                },
+                {
+                    "comment": "CALL Functions",
+                    "name": "support.function.ccl",
+                    "match": "(?i)\\bCALL\\s*(?:accept|box|cancel|cclexception|center|clear|compile|dcl|debug|echo|echojson|echorecord|echoxml|edit|line|parser|pause|print|printimage|scrolldown|scrollup|scrollinit|scrolltext|text|trace|video)\\b"
+                }
+            ]
+        },
         "statements" : {
             "patterns": [
                 {
@@ -210,7 +348,12 @@
                     "match": "(?i)\\b(?:select(?:\\s+distinct)?)\\b"
                 },
                 {
-                    "comment": "SELECT UNION Statements",
+                    "comment": "INTO Clause",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)\\b(?:into)\\b"
+                },
+                {
+                    "comment": "UNION Clause",
                     "name": "keyword.control.ccl",
                     "match": "(?i)\\b(?:union(?:\\s+all)?|minus|intersect)\\b"
                 },
@@ -235,14 +378,9 @@
                     "match": "(?i)\\b(?:delete)\\b"
                 },
                 {
-                    "comment": "INTO Clause",
-                    "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:into)\\b"
-                },
-                {
                     "comment": "FROM Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:from|(?:full|left|right|inner\\s+join|on)\\b"
+                    "match": "(?i)\\b(?:from|(?:full|left|right|inner\\s+join|on))\\b"
                 },
                 {
                     "comment": "PLAN Clause",
@@ -283,144 +421,16 @@
                         "3": { "name": "entity.name.function.ccl" },
                         "4": { "name": "entity.name.type" }
                     }
-                }
-            ]
-        },
-        "keywords" : {
-            "patterns": [
+                },
                 {
-                    "comment": "Program Flow Control (IF)",
+                    "comment": "ReportWriter Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:if|elseif|else|endif)\\b"
+                    "match": "(?i)\\b(?:break)\\b"
                 },
                 {
-                    "comment": "Program Flow Control (CASE)",
+                    "comment": "DECLARE Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:case|endcase)\\b"
-                },
-                {
-                    "comment": "Program Flow Control (FOR/WHILE)",
-                    "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:for|endfor|while|endwhile)\\b"
-                }
-            ]
-        },
-        "functions" : {
-            "patterns": [
-                {
-                    "comment": "Aggregate Functions",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:count|sum|avg|cube|min|max|median|percent|rollup|stddev|variance)\\b"
-                },
-                {
-                    "comment": "Bitwise Functions",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:band|bnot|bor|btest|bxor)\\b"
-                },
-                {
-                    "comment": "Math Functions",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:abs|ceil|event|exp|floor|greatest|least|log|log10|maxval|minval|mod|rand)\\b"
-                },
-                {
-                    "comment": "CCL Functions (A-B)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:aesdecryptfile|aesencryptfile|alter|alter2|alterlist|asis|assign|assign2|assign3)\\b"
-                },
-                {
-                    "comment": "CCL Functions (C)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:calcpos|callprg|cclfmt|cclio|char|check|checkdic|checkfun|checkprg|checkqueue|cost|curcodecover|curprog)\\b"
-                },
-                {
-                    "comment": "CCL Functions (CNVT)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:cnvtacc|cnvtalias|cnvtalphanum|cnvtbool|cnvtb10B16|cnvtb10b36|cnvtb16b10|cnvtb36b10|cnvthexraw|cnvtint|cnvtjsontorec|cnvtphone|cnvtrawhex|cnvtreal|cnvtrectoxml|cnvtrectojson|cnvtxmltorec)\\b"
-                },
-                {
-                    "comment": "CCL Functions (D-I)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:decode|error|evaluate|evaluate2|expand|findfile|ichar|initarray|initrec|isnumeric)\\b"
-                },
-                {
-                    "comment": "CCL Functions (L)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:list|locateval|locatevalsort|logical)\\b"
-                },
-                {
-                    "comment": "CCL Functions (M)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:maxrec|memalloc|memfree|memrealloc|modcheck|modify|moverec|movereclist)\\b"
-                },
-                {
-                    "comment": "CCL Functions (N)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:negate|nordbbind|null|nullcheck|nullind|nullterm|nullval)\\b"
-                },
-                {
-                    "comment": "CCL Functions (O)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:operator|outerjoin)\\b"
-                },
-                {
-                    "comment": "CCL Functions (P)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:parameter|parameter2|parser|percentile|proxyuser)\\b"
-                },
-                {
-                    "comment": "CCL Functions (R)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:rdbbind|reflect|remove|renamerec|reportinfo|reportmove|reportrow|round)\\b"
-                },
-                {
-                    "comment": "CCL Functions (S)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:selectivity|seq|size|sort|sortsearch|sound|soundex|sqlpassthru)\\b"
-                },
-                {
-                    "comment": "CCL Functions (T-Z)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:tdbexecute|text|textlen|trace|type|validate|value|wtmodcheck)\\b"
-                },
-                {
-                    "comment": "String Functions (A-B)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:aesdecrypt|aesencrypt|blobget|blobgetlen|build|build2)\\b"
-                },
-                {
-                    "comment": "String Functions (C-E)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:cnvtcap|cnvtlower|cnvtnls|cnvtnlssort|cnvtstring|cnvtstringchk|cnvtuplper|concat|curfile|curlocale)\\b"
-                },
-                {
-                    "comment": "String Functions (F-Z)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:fillstring|findstring|format|movestring|notrim|nopatstring|patstring|piece|replace|substring|text|trim|trimbind)\\b"
-                },
-                {
-                    "comment": "Datetime Functions (CNVT)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:cnvtage|cnvtage2|cnvtagedatetime|cnvtdate|cnvtdate2|cnvtdatetime|cnvtdatetime2|cnvtdatetimerdb|cnvtdatetimeutc|cnvtdatetimeutc2|cnvtlookahead|cnvtlookbehind|cnvtmin|cnvtmin2|cnvttime|cnvttime2|cnvttimestamp)\\b"
-                },
-                {
-                    "comment": "Datetime Functions (DATETIME)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:datetimeadd|datetimecmp|datetimecmputc|datetimediff|datetimefind|datetimepart|datetimetrunc|datetimezone|datetimezonebyindex|datetimezonebyname|datetimezoneformat)\\b"
-                },
-                {
-                    "comment": "Datetime Functions (A-Z)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:day|hour|julian|minute|month|utc|weekday|year)\\b"
-                },
-                {
-                    "comment": "UAR Functions (A-Z)",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:uar_get_code_by|uar_get_code_description|uar_get_code_display|uar_get_code_meaning|uar_get_meaning_by_codeset)\\b"
-                },
-                {
-                    "comment": "CALL Functions",
-                    "name": "support.function.ccl",
-                    "match": "(?i)\\bCALL\\s*(?:accept|box|cancel|cclexception|center|clear|compile|dcl|debug|echo|echojson|echorecord|echoxml|edit|line|parser|pause|print|printimage|scrolldown|scrollup|scrollinit|scrolltext|text|trace|video)\\b"
+                    "match": "(?i)\\b(?:declare|check|class|constant|noconstant|copy|image|image_aix|image_axp|image_lnx|image_win|map|persist|nopersist|persistscript|private|privateprotect|protect|public|sql|uar|uar_aix|uar_axp|uar_lnx|uar_win)\\b"
                 }
             ]
         }
