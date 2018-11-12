@@ -4,125 +4,179 @@
     "scopeName": "source.ccl",
     "uuid": "B8887E40-CC80-11E3-9C1A-0800200C9A66",
     "patterns": [
-        { "include": "#comments"   },
-        { "include": "#directives" },
-        { "include": "#strings"    },
-        { "include": "#numbers"    },
-        { "include": "#datatypes"  },
-        { "include": "#system"     },
-        { "include": "#statements" },
-        { "include": "#keywords"   },
-        { "include": "#functions"  }
-    ],
+        { "include": "#global"       },
+        { "include": "#root-context" },
+        { "include": "#datatypes"    },
+        { "include": "#keywords"     },
+        { "include": "#functions"    },
+        { "include": "#directives"   },
+        { "include": "#pseudo"       },
+        { "include": "#report-vars"  }
+],
     "repository": {
-        "comments" :
-        {
+        "global" : {
             "patterns": [
-                {
-                    "comment": "Block comment",
-                    "name": "comment.block.ccl",
-                    "begin": "/\\*",
-                    "end": "\\*/"
-                },
-                {
-                    "comment": "Single-line comment (semicolon)",
-                    "name": "comment.line.semicolon.ccl",
-                    "match": ";.*"
-                },
-                {
-                    "comment": "Single-line comment (exclamation mark)",
-                    "name": "comment.line.exclamation-mark.ccl",
-                    "match": "!(?!=).*"
-                }
-            ]
-        },
-        "directives" : {
-            "patterns": [
-                {
-                    "comment": "CLI Directives",
-                    "name": "keyword.control.ccl",
-                    "match": "(?i)^\\s*%(?:b|banner|c|clear|d|display|e|edit|h|help|i|include|j|journal|k|kedit|l|ledit|o|output|p|print|r|run|s|show|t|terminal|v|version|z)\\b"
-                },
-                {
-                    "comment": "Macro Directives",
-                    "name": "keyword.control.ccl",
-                    "match": "(?i)^\\s*%#(?:define|undef|ifdef|ifndef|else|endif)\\b"
-                }
-            ]
-        },
-        "strings" : {
-            "patterns": [
-                {
-                    "comment": "String (single quotation marks)",
-                    "name": "string.quoted.single.ccl",
-                    "begin": "'",
-                    "end": "'",
-                    "patterns": [
-                        { "include": "#character_escape" }
-                    ]
-                },
-                {
-                    "comment": "String (double quotation marks)",
-                    "name": "string.quoted.double.ccl",
-                    "begin": "\"",
-                    "end": "\"",
-                    "patterns": [
-                        { "include": "#character_escape" }
-                    ]
-                },
-                {
-                    "comment": "String (caret/circumflex accent)",
-                    "name": "string.quoted.caret.ccl",
-                    "begin": "\\^",
-                    "end": "\\^",
-                    "patterns": [
-                        { "include": "#character_escape" }
-                    ]
-                },
-                {
-                    "comment": "String (tilde)",
-                    "name": "string.quoted.tilde.ccl",
-                    "begin": "~",
-                    "end": "~",
-                    "patterns": [
-                        { "include": "#character_escape" }
-                    ]
-                },
-                {
-                    "comment": "String (vertical line)",
-                    "name": "string.quoted.vertical-line.ccl",
-                    "begin": "\\|",
-                    "end": "\\|",
-                    "patterns": [
-                        { "include": "#character_escape" }
-                    ]
-                }
+                { "include": "#comments"    },
+                { "include": "#strings"     },
+                { "include": "#numbers"     },
+                { "include": "#system-vars" }
             ],
             "repository": {
-                "character_escape" : {
+                "comments" : {
                     "patterns": [
                         {
-                            "comment": "Character escape",
-                            "name": "constant.character.escape.ccl",
-                            "match": "\\\\."
+                            "comment": "Block comment",
+                            "name": "comment.block.ccl",
+                            "begin": "/\\*",
+                            "end": "\\*/"
+                        },
+                        {
+                            "comment": "Single-line comment (semicolon)",
+                            "name": "comment.line.ccl",
+                            "match": ";.*"
+                        },
+                        {
+                            "comment": "Single-line comment (exclamation mark)",
+                            "name": "comment.line.ccl",
+                            "match": "!(?!=).*"
+                        }
+                    ]
+                },
+                "strings" : {
+                    "patterns": [
+                        {
+                            "comment": "String (single quotation marks)",
+                            "name": "string.quoted.ccl",
+                            "begin": "'",
+                            "end": "'",
+                            "patterns": [
+                                { "include": "#character_escape" }
+                            ]
+                        },
+                        {
+                            "comment": "String (double quotation marks)",
+                            "name": "string.quoted.ccl",
+                            "begin": "\"",
+                            "end": "\"",
+                            "patterns": [
+                                { "include": "#character_escape" }
+                            ]
+                        },
+                        {
+                            "comment": "String (caret/circumflex accent)",
+                            "name": "string.quoted.ccl",
+                            "begin": "\\^",
+                            "end": "\\^",
+                            "patterns": [
+                                { "include": "#character_escape" }
+                            ]
+                        },
+                        {
+                            "comment": "String (tilde)",
+                            "name": "string.quoted.ccl",
+                            "begin": "~",
+                            "end": "~",
+                            "patterns": [
+                                { "include": "#character_escape" }
+                            ]
+                        },
+                        {
+                            "comment": "String (vertical line)",
+                            "name": "string.quoted.ccl",
+                            "begin": "\\|",
+                            "end": "\\|",
+                            "patterns": [
+                                { "include": "#character_escape" }
+                            ]
+                        }
+                    ],
+                    "repository": {
+                        "character_escape" : {
+                            "patterns": [
+                                {
+                                    "comment": "Character escape",
+                                    "name": "constant.character.escape.ccl",
+                                    "match": "\\\\."
+                                }
+                            ]
+                        }
+                    }
+                },
+                "numbers" : {
+                    "patterns": [
+                        {
+                            "comment": "Number (integer)",
+                            "name": "constant.numeric.ccl",
+                            "match": "\\b\\d+(?i:\\.w)?\\b"
+                        },
+                        {
+                            "comment": "Number (float)",
+                            "name": "constant.numeric.ccl",
+                            "match": "\\b\\d+\\.\\d+\\b"
+                        }
+                    ]
+                },
+                "system-vars" : {
+                    "patterns": [
+                        {
+                            "comment": "System Variables (Version Number)",
+                            "name": "variable.language.ccl",
+                            "match": "\\b(?i:currev|currevminor|currevminor2|currevhnam|curcclrev|curcclver)\\b"
+                        },
+                        {
+                            "comment": "System Variables (Environment)",
+                            "name": "variable.language.ccl",
+                            "match": "\\b(?i:cursys|cursys2|curserver|curlocale|curbedrock|curclientid|curbatch|curenv|curimage|curnetdomain|curnode|curdomain|curuser|curgroup|curprcname|curprog|cursource|curmem|curutc|curutcdiff|curscroll|curecho)\\b"
+                        },
+                        {
+                            "comment": "System Variables (Relational Database)",
+                            "name": "variable.language.ccl",
+                            "match": "\\b(?i:currdb|currdbaccess|currdbhandle|currdblink|currdbname|currdbopt|currdbsys|currdbuser)\\b"
+                        },
+                        {
+                            "comment": "System Variables (Date/Time)",
+                            "name": "variable.language.ccl",
+                            "match": "\\b(?i:curclk|curdate|curtime|curtime2|curtime3|curtimezone|curtimezoneapp|curtimezonedef|curtimezonesys|sysdate|systimestamp)\\b"
+                        },
+                        {
+                            "comment": "System Variables (Runtime)",
+                            "name": "variable.language.ccl",
+                            "match": "\\b(?i:curaccept|curhelp|curendreport|curqual|curreturn|curwork)\\b"
                         }
                     ]
                 }
             }
         },
-        "numbers" : {
+        "root-context" : {
             "patterns": [
-                {
-                    "comment": "Number (integer)",
-                    "name": "constant.numeric.ccl",
-                    "match": "(?i)\\b\\d+(?:\\.w)?\\b"
-                },
-                {
-                    "comment": "Number (float)",
-                    "name": "constant.numeric.ccl",
-                    "match": "\\b\\d+\\.\\d+\\b"
+                { "include": "#root-statements" }
+            ],
+            "repository": {
+                "root-statements" : {
+                    "patterns": [
+                        {
+                            "comment": "Create/Drop Program",
+                            "match": "(?i)\\b(create|drop)\\s+(program)\\s+([[:alnum:]][_[:alnum:]]*)(:[[:alnum:]]+)?\\b",
+                            "captures": {
+                                "1": { "name": "keyword.control.ccl"      },
+                                "2": { "name": "keyword.control.ccl"      },
+                                "3": { "name": "entity.name.function.ccl" },
+                                "4": { "name": "entity.name.type"         }
+                            }
+                        },
+                        {
+                            "comment": "Transaction Control Statements",
+                            "name": "keyword.control.ccl",
+                            "match": "\\b(?i:commit|rollback|end|go)\\b"
+                        },
+                        {
+                            "comment": "DECLARE Statements",
+                            "name": "keyword.control.ccl",
+                            "match": "\\b(?i:declare|check|class|constant|noconstant|copy|image|image_aix|image_axp|image_lnx|image_win|map|persist|nopersist|persistscript|private|privateprotect|protect|public|sql|uar|uar_aix|uar_axp|uar_lnx|uar_win)\\b"
+                        }
+                    ]
                 }
-            ]
+            }
         },
         "datatypes" : {
             "patterns": [
@@ -148,151 +202,110 @@
                 }
             ]
         },
-        "system" : {
+        "pseudo" : {
             "patterns": [
                 {
                     "comment": "Pseudo Table",
                     "name": "support.class.table.ccl",
-                    "match": "(?i)\\b(?:dummyt)\\b"
+                    "match": "\\b(?i:dummyt)\\b"
                 },
                 {
                     "comment": "Pseudo Column",
                     "name": "support.class.column.ccl",
-                    "match": "(?i)\\b(?:seq)\\b"
-                },
-                {
-                    "comment": "System Variables (Version Number)",
-                    "name": "variable.language.ccl",
-                    "match": "(?i)\\b(?:currev|currevminor|currevminor2|currevhnam|curcclrev|curcclver)\\b"
-                },
-                {
-                    "comment": "System Variables (Environment)",
-                    "name": "variable.language.ccl",
-                    "match": "(?i)\\b(?:cursys|cursys2|curserver|curlocale|curbedrock|curclientid|curbatch|curenv|curimage|curnetdomain|curnode|curdomain|curuser|curgroup|curprcname|curprog|cursource|curmem|curutc|curutcdiff|curscroll|curecho)\\b"
-                },
-                {
-                    "comment": "System Variables (Relational DB Settings)",
-                    "name": "variable.language.ccl",
-                    "match": "(?i)\\b(?:currdb|currdbaccess|currdbhandle|currdblink|currdbname|currdbopt|currdbsys|currdbuser)\\b"
-                },
-                {
-                    "comment": "System Variables (Current date/time)",
-                    "name": "variable.language.ccl",
-                    "match": "(?i)\\b(?:curclk|curdate|curtime|curtime2|curtime3|curtimezone|curtimezoneapp|curtimezonedef|curtimezonesys|sysdate|systimestamp)\\b"
-                },
-                {
-                    "comment": "System Variables (Runtime)",
-                    "name": "variable.language.ccl",
-                    "match": "(?i)\\b(?:curaccept|curhelp|curendreport|curqual|curreturn|curwork)\\b"
-                },
+                    "match": "\\b(?i:seq)\\b"
+                }
+            ]
+        },
+        "report-vars" : {
+            "patterns": [
                 {
                     "comment": "System Variables (ReportWriter)",
                     "name": "variable.language.ccl",
-                    "match": "(?i)\\b(?:curpage|col|row|maxcol|maxrow)\\b"
+                    "match": "\\b(?i:curpage|col|row|maxcol|maxrow)\\b"
                 }
             ]
         },
         "statements" : {
             "patterns": [
                 {
-                    "comment": "Transaction Control Statements",
-                    "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:commit|rollback|end|go)\\b"
-                },
-                {
                     "comment": "Access Control Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:grant|revoke)\\b"
+                    "match": "\\b(?i:grant|revoke)\\b"
                 },
                 {
                     "comment": "SELECT Statement",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:select(?:\\s+distinct)?)\\b"
+                    "match": "\\b(?i:select(?:\\s+distinct)?)\\b"
                 },
                 {
                     "comment": "UNION Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:union(?:\\s+all)?|minus|intersect)\\b"
+                    "match": "\\b(?i:union(?:\\s+all)?|minus|intersect)\\b"
                 },
                 {
                     "comment": "INSERT Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:insert)\\b"
+                    "match": "\\b(?i:insert)\\b"
                 },
                 {
                     "comment": "UPDATE Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:update)\\b"
+                    "match": "\\b(?i:update)\\b"
                 },
                 {
                     "comment": "MERGE Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:merge)\\b"
+                    "match": "\\b(?i:merge)\\b"
                 },
                 {
                     "comment": "DELETE Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:delete)\\b"
+                    "match": "\\b(?i:delete)\\b"
                 },
                 {
                     "comment": "INTO Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:into)\\b"
+                    "match": "\\b(?i:into)\\b"
                 },
                 {
                     "comment": "FROM Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:from|(?:full|left|right|inner\\s+join|on))\\b"
+                    "match": "\\b(?i:from|(?:full|left|right|inner\\s+join|on))\\b"
                 },
                 {
                     "comment": "PLAN Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:plan|join|orjoin)\\b"
+                    "match": "\\b(?i:plan|join|orjoin)\\b"
                 },
                 {
                     "comment": "WHERE Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:where|and|or|in)\\b"
+                    "match": "\\b(?i:where|and|or|in)\\b"
                 },
                 {
                     "comment": "GROUP BY Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:group\\s+by)\\b"
+                    "match": "\\b(?i:group\\s+by)\\b"
                 },
                 {
                     "comment": "HAVING Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:having)\\b"
+                    "match": "\\b(?i:having)\\b"
                 },
                 {
                     "comment": "ORDER Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:order(?:\\s+by)?|asc|desc)\\b"
+                    "match": "\\b(?i:order(?:\\s+by)?|asc|desc)\\b"
                 },
                 {
                     "comment": "WITH Clause",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:with|append|archive|check|cpc|nocpc|compress|constraint|convert|counter|nocounter|crt|curdio|dio|dioduplex|diomargin|expand|filesort|format|noformat|formfeed|forms|noforms|forupdate|forupdatewait|heading|noheading|index|indexunique|landscape|nolandscape|maxcol|maxqual|maxread|maxrec|maxrow|memsort|mine|nullreport|orahint|orahintcbo|organization|owner|outerjoin|pcformat|pivot|preserve|nopreserve|print|rdbarrayfetch|rdbbindcons|nordbbindcons|rdbcboreparse|nordbcboreparse|rdbplan|rdbcbopluszero|nordbcbopluzero|rdbmsmisc|rdbrange|rdbunion|recsort|separator|size|skipbedrock|skiplogdomain|skipreport|sqltype|status|synonym|tablespace|test|time|version)\\b"
-                },
-                {
-                    "comment": "Create/Drop Program",
-                    "match": "(?i)\\b(create|drop)\\s+(program)\\s+([[:alnum:]][_[:alnum:]]*)(:[[:alnum:]]+)?\\b",
-                    "captures": {
-                        "1": { "name": "keyword.control.ccl" },
-                        "2": { "name": "keyword.control.ccl" },
-                        "3": { "name": "entity.name.function.ccl" },
-                        "4": { "name": "entity.name.type" }
-                    }
+                    "match": "\\b(?i:with|append|archive|check|cpc|nocpc|compress|constraint|convert|counter|nocounter|crt|curdio|dio|dioduplex|diomargin|expand|filesort|format|noformat|formfeed|forms|noforms|forupdate|forupdatewait|heading|noheading|index|indexunique|landscape|nolandscape|maxcol|maxqual|maxread|maxrec|maxrow|memsort|mine|nullreport|orahint|orahintcbo|organization|owner|outerjoin|pcformat|pivot|preserve|nopreserve|print|rdbarrayfetch|rdbbindcons|nordbbindcons|rdbcboreparse|nordbcboreparse|rdbplan|rdbcbopluszero|nordbcbopluzero|rdbmsmisc|rdbrange|rdbunion|recsort|separator|size|skipbedrock|skiplogdomain|skipreport|sqltype|status|synonym|tablespace|test|time|version)\\b"
                 },
                 {
                     "comment": "ReportWriter Statements",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:break)\\b"
-                },
-                {
-                    "comment": "DECLARE Statements",
-                    "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:declare|check|class|constant|noconstant|copy|image|image_aix|image_axp|image_lnx|image_win|map|persist|nopersist|persistscript|private|privateprotect|protect|public|sql|uar|uar_aix|uar_axp|uar_lnx|uar_win)\\b"
+                    "match": "\\b(?i:break)\\b"
                 }
             ]
         },
@@ -301,17 +314,17 @@
                 {
                     "comment": "Program Flow Control (IF)",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:if|elseif|else|endif)\\b"
+                    "match": "\\b(?i:if|elseif|else|endif)\\b"
                 },
                 {
                     "comment": "Program Flow Control (CASE)",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:case|endcase)\\b"
+                    "match": "\\b(?i:case|endcase)\\b"
                 },
                 {
                     "comment": "Program Flow Control (FOR/WHILE)",
                     "name": "keyword.control.ccl",
-                    "match": "(?i)\\b(?:for|endfor|while|endwhile)\\b"
+                    "match": "\\b(?i:for|endfor|while|endwhile)\\b"
                 }
             ]
         },
@@ -320,112 +333,112 @@
                 {
                     "comment": "Aggregate Functions",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:avg|count|cube|max|median|min|percent|rollup|stddev|sum|variance)\\b"
+                    "match": "\\b(?i:avg|count|cube|max|median|min|percent|rollup|stddev|sum|variance)\\b"
                 },
                 {
                     "comment": "Bitwise Functions",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:band|bnot|bor|btest|bxor)\\b"
+                    "match": "\\b(?i:band|bnot|bor|btest|bxor)\\b"
                 },
                 {
                     "comment": "Math Functions",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:abs|ceil|even|exp|floor|greatest|least|log|log10|maxval|minval|mod|rand)\\b"
+                    "match": "\\b(?i:abs|ceil|even|exp|floor|greatest|least|log|log10|maxval|minval|mod|rand)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (A-B)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:aesdecryptfile|aesencryptfile|alter|alter2|alterlist|asis|assign|assign2|assign3)\\b"
+                    "match": "\\b(?i:aesdecryptfile|aesencryptfile|alter|alter2|alterlist|asis|assign|assign2|assign3)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (C)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:calcpos|callprg|cclfmt|cclio|char|check|checkdic|checkfun|checkprg|checkqueue|cost|curcodecover|curprog)\\b"
+                    "match": "\\b(?i:calcpos|callprg|cclfmt|cclio|char|check|checkdic|checkfun|checkprg|checkqueue|cost|curcodecover|curprog)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (CNVT)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:cnvtacc|cnvtalias|cnvtalphanum|cnvtbool|cnvtb10B16|cnvtb10b36|cnvtb16b10|cnvtb36b10|cnvthexraw|cnvtint|cnvtjsontorec|cnvtphone|cnvtrawhex|cnvtreal|cnvtrectoxml|cnvtrectojson|cnvtxmltorec)\\b"
+                    "match": "\\b(?i:cnvtacc|cnvtalias|cnvtalphanum|cnvtbool|cnvtb10B16|cnvtb10b36|cnvtb16b10|cnvtb36b10|cnvthexraw|cnvtint|cnvtjsontorec|cnvtphone|cnvtrawhex|cnvtreal|cnvtrectoxml|cnvtrectojson|cnvtxmltorec)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (D-I)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:decode|error|evaluate|evaluate2|expand|findfile|ichar|initarray|initrec|isnumeric)\\b"
+                    "match": "\\b(?i:decode|error|evaluate|evaluate2|expand|findfile|ichar|initarray|initrec|isnumeric)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (L)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:list|locateval|locatevalsort|logical)\\b"
+                    "match": "\\b(?i:list|locateval|locatevalsort|logical)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (M)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:maxrec|memalloc|memfree|memrealloc|modcheck|modify|moverec|movereclist)\\b"
+                    "match": "\\b(?i:maxrec|memalloc|memfree|memrealloc|modcheck|modify|moverec|movereclist)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (N)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:negate|nordbbind|null|nullcheck|nullind|nullterm|nullval)\\b"
+                    "match": "\\b(?i:negate|nordbbind|null|nullcheck|nullind|nullterm|nullval)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (O)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:operator|outerjoin)\\b"
+                    "match": "\\b(?i:operator|outerjoin)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (P)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:parameter|parameter2|parser|percentile|proxyuser)\\b"
+                    "match": "\\b(?i:parameter|parameter2|parser|percentile|proxyuser)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (R)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:rdbbind|reflect|remove|renamerec|reportinfo|reportmove|reportrow|round)\\b"
+                    "match": "\\b(?i:rdbbind|reflect|remove|renamerec|reportinfo|reportmove|reportrow|round)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (S)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:selectivity|seq|size|sort|sortsearch|sound|soundex|sqlpassthru)\\b"
+                    "match": "\\b(?i:selectivity|seq|size|sort|sortsearch|sound|soundex|sqlpassthru)\\b"
                 },
                 {
                     "comment": "Miscellaneous Functions (T-Z)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:tdbexecute|text|textlen|trace|type|validate|value|wtmodcheck)\\b"
+                    "match": "\\b(?i:tdbexecute|text|textlen|trace|type|validate|value|wtmodcheck)\\b"
                 },
                 {
                     "comment": "String Functions (A-B)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:aesdecrypt|aesencrypt|blobget|blobgetlen|build|build2|build2chk)\\b"
+                    "match": "\\b(?i:aesdecrypt|aesencrypt|blobget|blobgetlen|build|build2|build2chk)\\b"
                 },
                 {
                     "comment": "String Functions (C-E)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:cnvtcap|cnvtlower|cnvtnls|cnvtnlssort|cnvtstring|cnvtstringchk|cnvtupper|concat|curfile|curlocale)\\b"
+                    "match": "\\b(?i:cnvtcap|cnvtlower|cnvtnls|cnvtnlssort|cnvtstring|cnvtstringchk|cnvtupper|concat|curfile|curlocale)\\b"
                 },
                 {
                     "comment": "String Functions (F-Z)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:fillstring|findstring|format|movestring|notrim|nopatstring|patstring|piece|replace|substring|text|trim|trimbind)\\b"
+                    "match": "\\b(?i:fillstring|findstring|format|movestring|notrim|nopatstring|patstring|piece|replace|substring|text|trim|trimbind)\\b"
                 },
                 {
                     "comment": "Datetime Functions (CNVT)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:cnvtage|cnvtage2|cnvtagedatetime|cnvtdate|cnvtdate2|cnvtdatetime|cnvtdatetime2|cnvtdatetimerdb|cnvtdatetimeutc|cnvtdatetimeutc2|cnvtlookahead|cnvtlookbehind|cnvtmin|cnvtmin2|cnvttime|cnvttime2|cnvttimestamp)\\b"
+                    "match": "\\b(?i:cnvtage|cnvtage2|cnvtagedatetime|cnvtdate|cnvtdate2|cnvtdatetime|cnvtdatetime2|cnvtdatetimerdb|cnvtdatetimeutc|cnvtdatetimeutc2|cnvtlookahead|cnvtlookbehind|cnvtmin|cnvtmin2|cnvttime|cnvttime2|cnvttimestamp)\\b"
                 },
                 {
                     "comment": "Datetime Functions (DATETIME)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:datetimeadd|datetimecmp|datetimecmputc|datetimediff|datetimefind|datetimepart|datetimetrunc|datetimezone|datetimezonebyindex|datetimezonebyname|datetimezoneformat)\\b"
+                    "match": "\\b(?i:datetimeadd|datetimecmp|datetimecmputc|datetimediff|datetimefind|datetimepart|datetimetrunc|datetimezone|datetimezonebyindex|datetimezonebyname|datetimezoneformat)\\b"
                 },
                 {
                     "comment": "Datetime Functions (A-Z)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:day|hour|julian|minute|month|utc|weekday|year)\\b"
+                    "match": "\\b(?i:day|hour|julian|minute|month|utc|weekday|year)\\b"
                 },
                 {
                     "comment": "UAR Functions (A-Z)",
                     "name": "support.function.ccl",
-                    "match": "(?i)\\b(?:uar_get_code_by|uar_get_code_description|uar_get_code_display|uar_get_code_meaning|uar_get_meaning_by_codeset)\\b"
+                    "match": "\\b(?i:uar_get_code_by|uar_get_code_description|uar_get_code_display|uar_get_code_meaning|uar_get_meaning_by_codeset)\\b"
                 },
                 {
                     "comment": "CALL Functions",
@@ -433,6 +446,20 @@
                     "match": "(?i)\\bCALL\\s*(?:accept|box|cancel|cclexception|center|clear|compile|dcl|debug|echo|echojson|echorecord|echoxml|edit|line|parser|pause|print|printimage|scrolldown|scrollup|scrollinit|scrolltext|text|trace|video)\\b"
                 }
             ]
+        },
+        "directives" : {
+            "patterns": [
+                {
+                    "comment": "CLI Directives",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)^\\s*%(?:b|banner|c|clear|d|display|e|edit|h|help|i|include|j|journal|k|kedit|l|ledit|o|output|p|print|r|run|s|show|t|terminal|v|version|z)\\b"
+                },
+                {
+                    "comment": "Macro Directives",
+                    "name": "keyword.control.ccl",
+                    "match": "(?i)^\\s*%#(?:define|undef|ifdef|ifndef|else|endif)\\b"
+                }
+            ]
         }
-    }
+   }
 }
