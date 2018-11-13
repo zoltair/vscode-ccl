@@ -1,0 +1,394 @@
+(* Basic Syntax - https://wiki.cerner.com/display/public/1101discernHP/Syntax+Rules+Using+Discern+Explorer *)
+
+(* Comments *)
+comment_block = '/*' {any} '*/';
+comment_line  = ';'|'!' {any} {EOL}; (* '!' only when not followed by '=' *)
+
+(* Line continuation *)
+line_continues = '\' {EOL};
+
+(* Strings *)
+string_delim = '"' | "'" | '^' | '~' | '|'; (* Single-quotation mark, double-quotation mark, caret, tilde, and vertical line *)
+character_escape = '\*' | '\?' | '\\'; (* Backslash followed by asterisk, question mark, or backslash *)
+
+(* Numbers *)
+integer = digit {digit} ['.w']; (* Optional trailing '.w' indicates W8 datatype *)
+float   = digit {digit} '.' {digit};
+
+(*
+Directive
+	An instruction to perform a task other than one associated
+	with a query, such as editing a file, turning on/off the
+	journaling feature, or including another source code file
+*)
+cli_directive = '%' (
+	'banner'   | 'b' |
+	'clear'    | 'c' |
+	'display'  | 'd' |
+	'edit'     | 'e' |
+	'help'     | 'h' |
+	'include'  | 'i' |
+	'journal'  | 'j' |
+	'kedit'    | 'k' |
+	'ledit'    | 'l' |
+	'output'   | 'o' |
+	'print'    | 'p' |
+	'run'      | 'r' |
+	'show'     | 's' |
+	'terminal' | 't' |
+	'version'  | 'v' |
+	'z'
+);
+cli_command = 'exit' | 'reset' | '$dir' | 'commit' | 'rollback';
+cli_os_cmd  = '$' os_command; (* arbitrary operating system command *)
+
+(* Conditional Macro Variables *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DEFINE+Directive+Using+Discern+Explorer *)
+macro_variable_name = identifier;
+define_directive = ('%#DEFINE' | '%#DEF') macro_variable_name;
+undef_directive  = '%#UNDEF' ( macro_variable_name | 'ALL' );
+ifdef_directive  = ('%#IFDEF' | '%IFNDEF') macro_variable_name;
+else_directive   = '%#ELSE';
+endif_directive  = '%#ENDIF';
+
+(* Label Directives *)
+(* https://wiki.cerner.com/display/public/1101discernHP/The+Label+Directive+Using+Discern+Explorer *)
+label = '#' identifier; (* Only within a program *)
+
+(* Datatypes *)
+fix_char_type = ['Z'|'G'|'ZG'] 'C' digit {digit};  (* Fixed-length character string *)
+max_char_type = ['Z'|'G'|'ZG'] 'VC' digit {digit}; (* Maximum-length character string *)
+var_char_type = ['Z'|'G'|'ZG'] 'VC';               (* Variable-length character string *)
+var_int_type  = 'H'; (* I4 or W8 *)
+int_type      = ['U'] ( 'I' ('1'|'2'|'4') | 'W8' );
+float_type    = 'F4' | 'F8';
+date_type     = 'DQ8' | 'DM12' | 'DM14';
+numeric_type  = 'N' digit {digit} ['.' digit {digit}] [sign]; (* length, precision, sign *)
+pack_type     = 'P' digit {digit} ['.' digit {digit}] ; (* pack, precision *)
+type_modifier = 'A' | 'B' | 'D' | 'E' | 'G' | 'L' | 'R' | 'S' | 'T' | 'U' | 'W' | 'Z';
+table_type    = type_modifier (fix_char_type | max_char_type | int_type | float_type | date_type | numeric_type | pack_type);
+record_type   = type_modifier (fix_char_type | var_char_type | int_type | float_type | date_type | var_int_type | numeric_type | pack_type);
+variable_type = (fix_char_type | var_char_type | int_type | float_type | date_type | var_int_type);
+
+(* Operators - https://wiki.cerner.com/display/public/1101discernHP/Operators+in+Discern+Explorer *)
+(* math_operator - https://wiki.cerner.com/display/public/1101discernHP/Arithmetic+Operators+using+Discern+Explorer *)
+(* logical_operator - https://wiki.cerner.com/display/public/1101discernHP/Qualifiers+using+Discern+Explorer *)
+(* relational_operator = https://wiki.cerner.com/display/public/1101discernHP/Relational+Operators+Using+Visual+Explorer *)
+unary_operator = '+' | '-';
+math_operator = '+' | '-' | '/' | '*' | '**';
+math_left_operator = '+=' | '-=' | '/=' | '*=';
+logical_operator = 'AND' | 'OR' | 'NOT';
+relational_operator = '=' | '!=' | '>' | '<' | '<=' | '>=' | 'BETWEEN' | 'IN' | 'IS' ['NOT'] | 'LIKE';
+
+(* Table and Field identifiers *)
+identifier = alphanum {alphanum | '_'};
+table_name = identifier; (* Name of a table in the database or data dictionary *)
+field_name = identifier; (* Name of a field in a given table *)
+alias      = identifier; (* Abbriviated name for a table *)
+table      = table_name | alias;
+range      = table;
+field      = [table '.'] field_name;
+pseudo_table = 'DUMMYT';
+pseudo_field = 'SEQ';
+
+expression =
+	alias '.' field_name |
+	table_name '.' field_name |
+	constant |
+	parameter |
+	variable |
+	array_name '[' dimension [',' dimension [',' dimension]] ']' |
+	record_name {'->' record_field_name} |
+	function '(' expression {',' expression} ')' |
+	'(' expression ')' |
+	'-' expression |
+	expression math_operator expression
+;
+
+(* display_options   - https://wiki.cerner.com/display/public/1101discernHP/Display+Options+using+Discern+Explorer *)
+(* display_template  - https://wiki.cerner.com/display/public/1101discernHP/Display+Template+Using+Discern+Explorer *)
+(* display_qualifier - https://wiki.cerner.com/display/public/1101discernHP/Display+Qualifier+using+Discern+Explorer *)
+(* display_format    - https://wiki.cerner.com/display/public/1101discernHP/Display+Format+using+Discern+Explorer *)
+display_options = '"' display_template ';' display_qualifier ';' , display_format '"';
+
+(*
+Command:
+    Initiates actions, such as extracting or displaying information
+	and creating or deleting a file. Certain commands, sometimes
+	referred to as statements, carry out instructions such as
+	setting a condition to be met before processing continues, or
+	initializing an array. These commands are the smallest
+	individual instructions that can be executed by Discern Explorer.
+
+Clause:
+	Individual instructions that clarify a command, such as
+	identifying the file from which information is extracted or
+	indicating whether information is displayed on a terminal or
+	sent to a printer.
+*)
+
+(* https://wiki.cerner.com/display/public/1101discernHP/SQL+Commands+using+Discern+Explorer *)
+sql_command =
+	select_command |
+	update_command |
+	insert_command |
+	delete_command |
+	define_command
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Programming+Constructs+using+Discern+Explorer *)
+prog_command =
+	if_command |
+	case_command |
+	while_command |
+	for_command |
+	execute_command |
+	goto_command
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/CALL+Commands+using+Discern+Explorer *)
+call_command =
+	call_accept_command |
+	call_box_command |
+	call_cancel_command |
+	call_center_command |
+	call_clear_command |
+	call_compile_command |
+	call_dcl_command |
+	call_debug_command |
+	call_echo_command |
+	call_echorecord_command |
+	call_echoxml_command |
+	call_edit_command |
+	call_line_command |
+	call_parser_command |
+	call_pause_command |
+	call_print_command |
+	call_printimage_command |
+	call_scrolldown_command |
+	call_scrollinit_command |
+	call_scrolltext_command |
+	call_scrollup_command |
+	call_text_command |
+	call_trace_command |
+	call_video_command
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/SET+Commands+Using+Discern+Explorer *)
+set_command =
+	set_accept_command |
+	set_error_command |
+	set_spool_command |
+	set_break_command |
+	set_help_command |
+	set_trace_command |
+	set_compile_command |
+	set_home_command |
+	set_transaction_command |
+	set_curaccept_command |
+	set_logical_command |
+	set_type_command |
+	set_curalias_command |
+	set_maxcolwidth_command |
+	set_validate_command |
+	set_curhelp_command |
+	set_message_command |
+	set_variable_command |
+	set_curlocale_command |
+	set_modify_command |
+	set_views_command |
+	set_curscope_command |
+	set_priority_command |
+	set_warining_command |
+	set_dir_command |
+	set_row_command |
+	set_width_command |
+	set_doc_command |
+	set_source_command |
+	set_window_command
+;
+(*
+Function:
+	Subroutines used in a Discern Explorer query to perform
+	specific tasks, such as calculating an average.
+
+Run-time Library Routines:
+	Discern Explorer programs that can be accessed from a program
+	written in a different programming language (such as COBOL or C).
+	The Discern Explorer program functions as if it had been
+	accessed from the keyboard.
+*)
+
+(* select_expression - https://wiki.cerner.com/display/public/1101discernHP/SELECT+Expressions+using+Discern+Explorer *)
+(* user-defined select expression - https://wiki.cerner.com/display/public/1101discernHP/User-Defined+Select+Expression+using+Discern+Explorer *)
+select_item =
+	[range '.'] '*' |
+	[range '.'] field_name |
+	expression [ math_operator expression ] |
+	conditional_statement |
+	aggregate_function |
+	function '(' expression {',' expression} ')' |
+	array_name '[' dimension [',' dimension [',' dimension]] ']' |
+	constant |
+	parameter |
+	variable |
+	record_name {'->' record_field_name}
+;
+select_expression =
+	select_item [display_options] |
+	name '=' select_item [display_options]
+;
+
+(*
+olap_expression
+	OnLine Analytical Processing (OLAP) expressions calculate an
+	aggregate value for a group of rows in the result set.
+	OLAP expressions are different from aggregate functions.
+	An aggregate function will return one row for each group.
+	An OLAP expression returns one value for each row in the group.
+	For example, the aggregate count() function would return a
+	total count for the group where an OLAP expression would
+	return a running count for the group.
+*)
+olap_expression =
+	name '=' analytic_function '(' [ param {',' param} ] ')'
+	'OVER' '('
+		['PARTITION BY' expression {',' expression}]
+		'ORDER BY' expression ['DESC'] {',' expression ['DESC']}
+		['RANGE'|'ROWS' ['BETWEEN' bound 'AND'] bound]
+	')'
+;
+
+analytic_function = (
+	'AVG'|'COUNT'|'MAX'|'MIN'|'STDEV'|'SUM'|'VARIANCE'|
+	'RANK'|'DENSE_RANK'|'NTILE'|'CUME_DIST'|'PERCENT_RANK'|
+	'ROW_NUMBER'|'PERCENTILE_CONT'|'PERCENTILE_DISC'
+);
+bound = 'CURRENT_ROW' | 'UNBOUNDED' | integer 'PRECEDING' | integer 'FOLLOWING';
+
+output_device = 'CRT' | 'CURDIO' | filename | 'FORMS' | 'MINE' | 'NOFORMS' | 'NL:' | printer_queue_name | 'TABLE' table_name | 'TRIM(' global_variable ')';
+
+(* parameter - https://wiki.cerner.com/display/1101discernHP/PARAMETER+using+Discern+Explorer *)
+(* qualification - https://wiki.cerner.com/display/1101discernHP/Types+of+Qualifications+using+Discern+Explorer *)
+qualification =
+	'(' qualification ')' |
+	'NOT' qualification |
+	qualification 'AND' qualification |
+	qualification 'OR' qualification |
+	expression relational_operator expression |
+	expression relational_operator subquery |
+	{logical_operator expression relational_operator expression}
+;
+(* control_option - https://wiki.cerner.com/display/1101discernHP/Control+Options+using+Discern+Explorer *)
+(* expression - https://wiki.cerner.com/display/public/1101discernHP/Expressions+using+Discern+Explorer *)
+(* inline_select_table - https://wiki.cerner.com/display/public/1101discernHP/SELECT+Using+Discern+Explorer *)
+(* join_operator - https://wiki.cerner.com/display/public/1101discernHP/JOIN+Options+using+Discern+Explorer *)
+join_operator = ('JOIN' | 'ORJOIN');
+
+distinct_clause = 'DISTINCT';
+into_clause = 'INTO' output_device;
+select_item_list =
+	select_expression
+	{',' select_expression}
+	{',' olap_expression}
+;
+from_clause =
+	'FROM'
+	table_name [alias] {',' table_name [alias]}
+	{',' '(' ['FULL'|'LEFT'|'RIGHT'|'INNER JOIN'] table_name [alias] ['ON' qualification] ')'}
+	{ [inline_select_table] }
+;
+where_clause = 'WHERE' qualification;
+
+(* plan_clause - https://wiki.cerner.com/display/public/1101discernHP/PLANS+and+JOINS+using+Discern+Explorer *)
+plan_clause =
+	'PLAN' range [where_clause]
+	{join_operator range [where_clause]}
+;
+
+group_by_clause = 'GROUP' 'BY' expression;
+having_clause = 'HAVING' condition;
+order_by_clause =
+	'ORDER'
+	select_expression ['DESC'] {',' select_expression ['DESC']}
+;
+select_option_clause =
+	'WITH'
+	control_option {',' control_option}
+;
+(* control_option - https://wiki.cerner.com/display/1101discernHP/Control+Options+using+Discern+Explorer *)
+control_option =
+	single_word_control_option |
+	function_control_option '(' param {',' param} ')' |
+	assign_control_option '=' expression
+;
+select_query_statement =
+	'SELECT'
+	[distinct_clause]
+	[into_clause]
+	select_item_list
+	[from_clause]
+	[ where_clause | plan_clause ]
+	[group_by_clause]
+	[having_clause]
+	[order_by_clause]
+	[select_option_clause]
+;
+
+(* select_if - https://wiki.cerner.com/display/public/1101discernHP/SELECT+IF+using+Discern+Explorer *)
+select_if_statement =
+	'SELECT'
+	'IF' '(' condition ')' {select_clause}
+	['ELSEIF' '(' condition ')' {select_clause}]
+	'ELSE' {select_clause}
+	'ENDIF'
+	[{select_clause}]
+;
+
+(* select_reportwriter - https://wiki.cerner.com/display/public/1101discernHP/SELECT+Reportwriter+using+Discern+Explorer *)
+select_report_statement =
+	'SELECT'
+	[distinct_clause]
+	[into_clause]
+	select_item_list
+	[from_clause]
+	[ where_clause | plan_clause ]
+	[group_by_clause],
+	[having_clause],
+	[order_by_clause},
+
+	['HEAD REPORT', report_item , {report_item} ],
+	['HEAD PAGE', report_item , {report_item} ],
+	['HEAD', group_expression , report_item , {report_item} ],
+	['DETAIL', report_item , {report_item} ],
+	['FOOT', group_expression , report_item , {report_item} ],
+	['FOOT PAGE', report_item , {report_item} ],
+	['FOOT REPORT', report_item , {report_item} ],
+
+	[select_option_clause]
+;
+
+report_item =
+	aggregate_expression |
+	call_trace_function |
+	call_center_function |
+	call_print_function |
+	call_debug_function |
+	call_echo_function |
+	call_text_function
+	call_uar |
+	call_sql_function |
+	call_subroutine |
+	break_command |
+	declare_command |
+	if_command |
+	case_command |
+	for_command |
+	while_command |
+	macro_command |
+	row_command |
+	col_command
+	select_expression_assignment |
+	text |
+	variable
+;
