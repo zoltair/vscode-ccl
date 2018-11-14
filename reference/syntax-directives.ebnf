@@ -1,0 +1,65 @@
+(* Directive *)
+(*
+	Single-line commands to perform a task other than one associated
+	with a query, such as editing a file, turning on/off the
+	journaling feature, or including another source code file
+*)
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Using+Directives+in+Discern+Explorer *)
+(* All directives must begin in the first column *)
+(*
+No parameters
+    https://wiki.cerner.com/display/1101discernHP/BANNER+Using+Discern+Explorer
+    https://wiki.cerner.com/display/1101discernHP/CLEAR+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/HELP+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/JOURNAL+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/KEDIT+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/SHOW+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/VERSION+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/Z+directive+using+Discern+Explorer
+
+One parameter
+    https://wiki.cerner.com/display/1101discernHP/DISPLAY+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/EDIT+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/INCLUDE+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/LEDIT+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/OUTPUT+using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/Print+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/RUN+Using+Discern+Explorer
+    https://wiki.cerner.com/display/public/1101discernHP/Terminal+Using+Discern+Explorer
+*)
+cli_directive = '%' (
+	'banner'   | 'b' |
+	'clear'    | 'c' |
+	'display'  | 'd' |
+	'edit'     | 'e' |
+	'help'     | 'h' |
+	'include'  | 'i' |
+	'journal'  | 'j' |
+	'kedit'    | 'k' |
+	'ledit'    | 'l' |
+	'output'   | 'o' |
+	'print'    | 'p' |
+	'run'      | 'r' |
+	'show'     | 's' |
+	'terminal' | 't' |
+	'version'  | 'v' |
+	'z'
+);
+cli_dir_cmd = '$dir'; (* https://wiki.cerner.com/display/public/1101discernHP/DIR+using+Discern+Explorer *)
+cli_os_cmd  = '$' os_command; (* https://wiki.cerner.com/display/public/1101discernHP/OS+Command+using+Discern+Explorer *)
+cli_command = 'exit' | 'reset' | 'commit' | 'rollback' | 'go' | cli_dir_cmd | cli_os_cmd;
+
+(* Conditional Macro Variables *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DEFINE+Directive+Using+Discern+Explorer *)
+macro_variable_name = identifier;
+define_directive = ('%#DEFINE' | '%#DEF') macro_variable_name;
+undef_directive  = '%#UNDEF' ( macro_variable_name | 'ALL' );
+ifdef_directive  = ('%#IFDEF' | '%IFNDEF') macro_variable_name;
+else_directive   = '%#ELSE';
+endif_directive  = '%#ENDIF';
+
+(* Label Directives *)
+(* https://wiki.cerner.com/display/public/1101discernHP/The+Label+Directive+Using+Discern+Explorer *)
+label = '#' identifier; (* Only within a program *)
+

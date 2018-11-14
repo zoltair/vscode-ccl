@@ -1,0 +1,224 @@
+(* CCL Basic Syntax *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Syntax+Rules+Using+Discern+Explorer *)
+
+(* Comments *)
+comment_block = '/*' {any} '*/';
+comment_line  = ';'|'!' {any} {EOL}; (* '!' only when not followed by '=' *)
+
+(* Line continuation *)
+line_continues = '\' {EOL};
+
+(* Strings *)
+(* Strings can be delimited by: single-quotation mark, double-quotation mark, caret, tilde, or vertical line *)
+string =
+	'"' {any | escape_char | wildcard_char} '"' |
+	'"' {any | escape_char | wildcard_char} '"' |
+	'^' {any | escape_char | wildcard_char} '^' |
+	'~' {any | escape_char | wildcard_char} '~' |
+	'|' {any | escape_char | wildcard_char} '|'
+;
+wildcard_char = '?' | '*'; (* Match a single unknown character [?] or match zero-or-more unknown characters [*] *)
+escape_char = '\*' | '\?' | '\\'; (* Backslash followed by asterisk, question mark, or backslash *)
+
+(* Numbers *)
+integer = digit {digit} ['.w']; (* Optional trailing '.w' indicates W8 datatype *)
+float   = digit {digit} '.' {digit};
+number  = integer | float;
+
+constant = string | number ;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Operators+in+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Arithmetic+Operators+using+Discern+Explorer *)
+unary_operator  = '+' | '-';
+math_operator   = '+' | '-' | '/' | '*' | '**';
+assign_operator = '=' | '+=' | '-=' | '/=' | '*=';
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Operators+in+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Relational+Operators+Using+Visual+Explorer *)
+(*
+    IS and IS NOT are only shown with NULL as a value
+        I'm unsure if IS and IS NOT are effectively interchangeable with '=' and '!='
+    LIKE is only meant for string values which contain at least one wildcard character
+        LIKE is effectively interchangeable with '='
+*)
+relational_operator = '=' | '!=' | '>' | '<' | '<=' | '>=' | 'IS' ['NOT'] | 'LIKE';
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Operators+in+Discern+Explorer *)
+unary_logical_operator = 'NOT';
+logical_operator = 'AND' | 'OR';
+
+(* Identifiers *)
+(* This is just a reasonable guess - I haven't found any concrete verification *)
+identifier = alphanum {alphanum | '_'};
+
+(* Namepaces *)
+(* Namespaces can be used to group variables, arrays, classes, and subroutines *)
+(* The default namespace is "PUBLIC" *)
+namespace = 'PUBLIC' | 'CLASS' | '_' | identifier;
+
+(* Datatypes *)
+fix_char_type = ['Z'|'G'|'ZG'] 'C'  digit {digit}; (* Fixed-length character string *)
+max_char_type = ['Z'|'G'|'ZG'] 'VC' digit {digit}; (* Maximum-length character string *)
+var_char_type = ['Z'|'G'|'ZG'] 'VC';               (* Variable-length character string *)
+int_type      = ['U'] ( 'I' ('1'|'2'|'4') | 'W8' );
+float_type    = 'F4' | 'F8';
+dt_tm_type    = 'DQ8' | 'DM12' | 'DM14';
+var_int_type  = 'H'; (* I4 or W8 *)
+length        = digit {digit};
+pack          = digit {digit};
+precision     = '.' digit {digit};
+numeric_type  = 'N' length [precision] [sign];
+pack_type     = 'P' pack   [precision];
+type_modifier = 'A' | 'B' | 'D' | 'E' | 'G' | 'L' | 'R' | 'S' | 'T' | 'U' | 'W' | 'Z';
+
+table_item_type    = type_modifier (fix_char_type | max_char_type | int_type | float_type | dt_tm_type | numeric_type | pack_type               );
+record_item_type   = type_modifier (fix_char_type | var_char_type | int_type | float_type | dt_tm_type | numeric_type | pack_type | var_int_type);
+variable_data_type =               (fix_char_type | var_char_type | int_type | float_type | dt_tm_type |                            var_int_type);
+array_item_type    =               (fix_char_type |                 int_type | float_type | dt_tm_type |                            var_int_type);
+
+(* https://wiki.cerner.com/display/public/1101discernHP/SET+CURSCOPE+using+Discern+Explorer *)
+(* scope applies to variables, record structures, and subroutines *)
+scope =
+    'PUBLIC' | 'PRIVATE' | 'PROTECT' | 'PRIVATEPROTECT'
+;
+(* Variables *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DECLARE+Using+Discern+Explorer *)
+variable_name = identifier;
+variable_declare =
+    'DECLARE' [namespace '::'] variable_name '=' variable_data_type
+    [ 'WITH' variable_declare_option {',' variable_declare_option} ]
+;
+variable_declare_option =
+    'CONSTANT' '(' expression {',' expression} ')' |
+    'NOCONSTANT' '(' expression {',' expression} ')' |
+    'PERSIST' | 'NOPERSIST' | 'PERSISTSCRIPT' |
+    scope
+;
+
+(* Arrays *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DECLARE+Using+Discern+Explorer *)
+(* Arrays can be one-, two-, or three-dimensional only *)
+(* Only fixed-length datatypes are allowed *)
+array_name = identifier;
+occurs = integer;
+array_declare =
+    'DECLARE' [namespace '::'] array_name '[' occurs [',' occurs [',' occurs]] ']' '=' array_item_type
+    [ 'WITH' variable_declare_option {',' variable_declare_option}]
+;
+
+(* Record Structures *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Defining+a+Record+Structure+Using+Discern+Explorer *)
+record_define =
+    'RECORD' record_name '('
+        {level group_item}
+        {level list_item '[' occurs ']'}
+        {level field_item '=' record_item_type }
+        {level field_item '[' occurs ']' '=' record_item_type}
+    ')' 'WITH' scope
+;
+
+(* Subroutines *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DECLARE+Using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/SUBROUTINE+Using+Discern+Explorer *)
+(* Prior to Discern Explorer 8.10.1, a separate DECLARE command was needed to specify parameter and return types *)
+subroutine_name = identifier;
+sub_param_name = identifier;
+sub_param = sub_param_name '=' variable_data_type [('REF' | 'VALUE') [',' param_default]];
+sub_declare =
+    'DECLARE' [namespace '::'] subroutine_name '(' sub_param {',' sub_param} ')' '=' variable_data_type
+    [ 'WITH' sub_declare_option {',' sub_declare_option}]
+;
+sub_declare_option =
+    'COPY' | scope
+;
+sub_define =
+    'SUBROUTINE' [namespace '::'] subroutine_name '(' sub_param {',' sub_param} ')' '=' variable_data_type
+    [ 'WITH' sub_declare_option {',' sub_declare_option} ]
+        {command}
+    'END'
+;
+
+(* Hash Map Functions *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DECLARE+Using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/MAP+Using+Discern+Explorer *)
+(*
+    A hash map is declared and called much like a user-defined function
+        with three parameters: "map_mode", "map_key", and "map_value"
+        (though they are not required to use those names)
+
+    The "map_mode" parameter must specify a character datatype, such as VC, C1, or C6
+    The "map_key" parameter specifies the datatype used for the hash map keys
+    The "map_value" parameter specifies the datatype used for the hash map values
+    The hash map function always returns an integer value, so the return datatype should be I4
+
+    The hash map function is called with a "map_mode" value and one, two, or
+        three more parameters depending on the given "map_mode" value
+    The hash map function generally returns:
+         1 - success
+         0 - invalid
+        -1 - error
+*)
+hash_map_name = identifier;
+hash_map_mode_param  = variable_name '=' (fix_char_type | var_char_type);
+hash_map_key_param   = sub_param;
+hash_map_value_param = sub_param;
+hash_map_declare =
+    'DECLARE' hash_map_name '(' hash_map_mode_param ',' hash_map_key_param ',' hash_map_value_param ')' '=' 'I4'
+    'WITH' hash_map_declare_option
+;
+hash_map_declare_option =
+    'MAP' '=' '"HASH"'
+;
+
+(* Classes *)
+(* https://wiki.cerner.com/display/public/1101discernHP/CREATE+CLASS+Using+Discern+Explorer *)
+class_name = identifier;
+class_define =
+    'CREATE' 'CLASS' class_name
+        ['FROM'  class_name]
+        {'INIT'  {class_command} 'END'}
+        {'FINAL' {class_command} 'END'}
+    'WITH' class_define_option {',' class_define_option}
+;
+class_define_option =
+    'COPY' ['=' ('0'|'1'|'2')] |
+    'MODE' '=' ('0'|'1')
+;
+(* Class Instances *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DECLARE+Using+Discern+Explorer *)
+instance_name = identifier;
+instance_declare =
+    'DECLARE' [namespace '::'] instance_name '=' 'NULL'
+    'WITH' instance_declare_option
+;
+instance_declare_option =
+    'CLASS' '(' class_name ')'
+;
+
+(* UAR Sharable Libraries *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DECLARE+Using+Discern+Explorer *)
+(* A "UAR" is a Cerner-defined sharable library image *)
+uar_lib_name = identifier;
+uar_lib_declare =
+    'DECLARE' uar_lib_name '(' sub_param {',' sub_param} ')'
+    'WITH' uar_lib_declare_option {',' uar_lib_declare_option}
+;
+uar_lib_declare_option =
+    'CHECK' |
+    ( 'IMAGE' | 'IMAGE_AIX' | 'IMAGE_AXP' | 'IMAGE_LNX' | 'IMAGE_WIN' ) '=' uar_image_name |
+    ( 'UAR' | 'UAR_AIX' | 'UAR_AXP' | 'UAR_LNX' | 'UAR_WIN' ) '=' uar_lib_name
+;
+
+(* SQL Package Functions *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DECLARE+Using+Discern+Explorer *)
+(* A "SQL" package function is a subroutine/function defined within the RDBMS database itself *)
+sql_sub_name = identifier; (* not required to match RDBMS function name *)
+sql_sub_declare =
+    'DECLARE' sql_sub_name '(' sub_param {',' sub_param} ')'
+    'WITH' sql_sub_declare_option [',' 'PARAMETER']
+;
+sql_package_name = identifier; (* RDBMS package name *)
+sql_function_name = identifier; (* RDBMS function name *)
+sql_sub_declare_option =
+    'SQL' '=' sql_package_name '.' sql_function_name
+;

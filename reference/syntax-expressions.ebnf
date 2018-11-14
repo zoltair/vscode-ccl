@@ -1,0 +1,19 @@
+
+table_name = identifier; (* Name of a table in the database or data dictionary *)
+alias      = identifier; (* Abbriviated name for a table *)
+field_name = identifier; (* Name of a field in a given table *)
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Expressions+using+Discern+Explorer *)
+expression =
+	alias '.' field_name |
+	table_name '.' field_name |
+	constant |
+	parameter |
+	variable |
+	array_name '[' dimension [',' dimension [',' dimension]] ']' |
+	record_name {'->' record_field_name} |
+	function '(' expression {',' expression} ')' |
+	'(' expression ')' |
+	'-' expression |
+	expression math_operator expression
+;
