@@ -4,7 +4,8 @@
     "scopeName": "source.ccl",
     "uuid": "B8887E40-CC80-11E3-9C1A-0800200C9A66",
     "patterns": [
-        { "include": "#global"       },
+        { "include": "#comments"     },
+        { "include": "#expression"   },
         { "include": "#root-context" },
         { "include": "#datatypes"    },
         { "include": "#keywords"     },
@@ -12,97 +13,36 @@
         { "include": "#directives"   },
         { "include": "#pseudo"       },
         { "include": "#report-vars"  }
-],
+    ],
     "repository": {
-        "global" : {
+        "comments" : {
             "patterns": [
-                { "include": "#comments"    },
-                { "include": "#strings"     },
-                { "include": "#numbers"     },
-                { "include": "#system-vars" }
+                {
+                    "comment": "Block comment",
+                    "name": "comment.block.ccl",
+                    "begin": "/\\*",
+                    "end": "\\*/"
+                },
+                {
+                    "comment": "Single-line comment (semicolon)",
+                    "name": "comment.line.ccl",
+                    "match": ";.*"
+                },
+                {
+                    "comment": "Single-line comment (exclamation mark)",
+                    "name": "comment.line.ccl",
+                    "match": "!(?!=).*"
+                }
+            ]
+        },
+        "expression" : {
+            "patterns": [
+                { "include": "#constant"  },
+                { "include": "#variable"  },
+                { "include": "#parameter" }
             ],
             "repository": {
-                "comments" : {
-                    "patterns": [
-                        {
-                            "comment": "Block comment",
-                            "name": "comment.block.ccl",
-                            "begin": "/\\*",
-                            "end": "\\*/"
-                        },
-                        {
-                            "comment": "Single-line comment (semicolon)",
-                            "name": "comment.line.ccl",
-                            "match": ";.*"
-                        },
-                        {
-                            "comment": "Single-line comment (exclamation mark)",
-                            "name": "comment.line.ccl",
-                            "match": "!(?!=).*"
-                        }
-                    ]
-                },
-                "strings" : {
-                    "patterns": [
-                        {
-                            "comment": "String (single quotation marks)",
-                            "name": "string.quoted.ccl",
-                            "begin": "'",
-                            "end": "'",
-                            "patterns": [
-                                { "include": "#character_escape" }
-                            ]
-                        },
-                        {
-                            "comment": "String (double quotation marks)",
-                            "name": "string.quoted.ccl",
-                            "begin": "\"",
-                            "end": "\"",
-                            "patterns": [
-                                { "include": "#character_escape" }
-                            ]
-                        },
-                        {
-                            "comment": "String (caret/circumflex accent)",
-                            "name": "string.quoted.ccl",
-                            "begin": "\\^",
-                            "end": "\\^",
-                            "patterns": [
-                                { "include": "#character_escape" }
-                            ]
-                        },
-                        {
-                            "comment": "String (tilde)",
-                            "name": "string.quoted.ccl",
-                            "begin": "~",
-                            "end": "~",
-                            "patterns": [
-                                { "include": "#character_escape" }
-                            ]
-                        },
-                        {
-                            "comment": "String (vertical line)",
-                            "name": "string.quoted.ccl",
-                            "begin": "\\|",
-                            "end": "\\|",
-                            "patterns": [
-                                { "include": "#character_escape" }
-                            ]
-                        }
-                    ],
-                    "repository": {
-                        "character_escape" : {
-                            "patterns": [
-                                {
-                                    "comment": "Character escape",
-                                    "name": "constant.character.escape.ccl",
-                                    "match": "\\\\."
-                                }
-                            ]
-                        }
-                    }
-                },
-                "numbers" : {
+                "constant" : {
                     "patterns": [
                         {
                             "comment": "Number (integer)",
@@ -113,10 +53,80 @@
                             "comment": "Number (float)",
                             "name": "constant.numeric.ccl",
                             "match": "\\b\\d+\\.\\d+\\b"
+                        },
+                        {
+                            "comment": "String (single quotation marks)",
+                            "name": "string.quoted.ccl",
+                            "begin": "'",
+                            "end": "'",
+                            "patterns": [
+                                { "include": "#wildcard_char" },
+                                { "include": "#escaped_char"  }
+                            ]
+                        },
+                        {
+                            "comment": "String (double quotation marks)",
+                            "name": "string.quoted.ccl",
+                            "begin": "\"",
+                            "end": "\"",
+                            "patterns": [
+                                { "include": "#wildcard_char" },
+                                { "include": "#escaped_char"  }
+                            ]
+                        },
+                        {
+                            "comment": "String (caret/circumflex accent)",
+                            "name": "string.quoted.ccl",
+                            "begin": "\\^",
+                            "end": "\\^",
+                            "patterns": [
+                                { "include": "#wildcard_char" },
+                                { "include": "#escaped_char"  }
+                            ]
+                        },
+                        {
+                            "comment": "String (tilde)",
+                            "name": "string.quoted.ccl",
+                            "begin": "~",
+                            "end": "~",
+                            "patterns": [
+                                { "include": "#wildcard_char" },
+                                { "include": "#escaped_char"  }
+                            ]
+                        },
+                        {
+                            "comment": "String (vertical line)",
+                            "name": "string.quoted.ccl",
+                            "begin": "\\|",
+                            "end": "\\|",
+                            "patterns": [
+                                { "include": "#wildcard_char" },
+                                { "include": "#escaped_char"  }
+                            ]
                         }
-                    ]
+                    ],
+                    "repository": {
+                        "wildcard_char" : {
+                            "patterns": [
+                                {
+                                    "comment": "Wildcard character",
+                                    "name": "constant.character.escape.ccl",
+                                    "match": "[?*]"
+                                }
+                            ]
+                        },
+                        "escaped_char" : {
+                            "patterns": [
+                                {
+                                    "comment": "Escaped character",
+                                    "name": "constant.character.escape.ccl",
+                                    "match": "\\\\."
+                                }
+                            ]
+                        }
+                    }
                 },
-                "system-vars" : {
+                "variable" : {
                     "patterns": [
                         {
                             "comment": "System Variables (Version Number)",
@@ -144,6 +154,15 @@
                             "match": "\\b(?i:curaccept|curhelp|curendreport|curqual|curreturn|curwork)\\b"
                         }
                     ]
+                },
+                "parameter" : {
+                    "patterns": [
+                        {
+                            "comment": "Prompt parameters" ,
+                            "name":"variable.language.ccl",
+                            "match": "\\$[[:alnum:]][_[:alnum:]]*"
+                        }
+                    ]
                 }
             }
         },
@@ -155,19 +174,44 @@
                 "root-statements" : {
                     "patterns": [
                         {
-                            "comment": "Create/Drop Program",
-                            "match": "(?i)\\b(create|drop)\\s+(program)\\s+([[:alnum:]][_[:alnum:]]*)(:[[:alnum:]]+)?\\b",
+                            "comment": "Transaction Control Statements",
+                            "name": "keyword.control.ccl",
+                            "match": "\\b(?i:commit|rollback|go)\\b"
+                        },
+                        {
+                            "comment": "DROP Program",
+                            "match": "\\b(?i:(drop\\s+program)\\s+([[:alnum:]][_[:alnum:]]*)(:[[:alnum:]]+)?)\\b",
                             "captures": {
                                 "1": { "name": "keyword.control.ccl"      },
-                                "2": { "name": "keyword.control.ccl"      },
-                                "3": { "name": "entity.name.function.ccl" },
-                                "4": { "name": "entity.name.type"         }
+                                "2": { "name": "entity.name.function.ccl" },
+                                "3": { "name": "entity.name.type"         }
                             }
                         },
                         {
-                            "comment": "Transaction Control Statements",
-                            "name": "keyword.control.ccl",
-                            "match": "\\b(?i:commit|rollback|end|go)\\b"
+                            "comment": "CREATE Program (begin)",
+                            "match": "\\b(?i:(create\\s+program)\\s+([[:alnum:]][_[:alnum:]]*)(:[[:alnum:]]+)?)\\b",
+                            "captures": {
+                                "1": { "name": "keyword.control.ccl"      },
+                                "2": { "name": "entity.name.function.ccl" },
+                                "3": { "name": "entity.name.type"         }
+                            }
+                        },
+                        {
+                            "comment": "CREATE Program (end)",
+                            "match": "\\b(?i:end)\\b",
+                            "name": "keyword.control.ccl"
+                        },
+                        {
+                            "comment": "PROMPT (begin)",
+                            "match": "\\b(?i:prompt)\\b",
+                            "name": "keyword.control.ccl"
+                        },
+                        {
+                            "comment": "PROMPT (end)",
+                            "match": "\\b(?i:(with).*)$\n?",
+                            "captures": {
+                                "1": { "name": "keyword.control.ccl" }
+                            }
                         },
                         {
                             "comment": "DECLARE Statements",
@@ -461,5 +505,5 @@
                 }
             ]
         }
-   }
+    }
 }

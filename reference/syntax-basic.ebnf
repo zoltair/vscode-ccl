@@ -11,8 +11,8 @@ line_continues = '\' {EOL};
 (* Strings *)
 (* Strings can be delimited by: single-quotation mark, double-quotation mark, caret, tilde, or vertical line *)
 wildcard_char = '?' | '*'; (* Match a single unknown character [?] or match zero-or-more unknown characters [*] *)
-escape_char = '\*' | '\?' | '\\'; (* Backslash followed by asterisk, question mark, or backslash *)
-string_content = {any | escape_char | wildcard_char};
+escaped_char = '\*' | '\?' | '\\'; (* Backslash followed by asterisk, question mark, or backslash *)
+string_content = {any | escaped_char | wildcard_char};
 string =
     '"' string_content '"' |
     '"' string_content '"' |
