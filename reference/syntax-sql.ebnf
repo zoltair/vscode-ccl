@@ -1,0 +1,341 @@
+(*
+Command:
+    Initiates actions, such as extracting or displaying information
+    and creating or deleting a file. Certain commands, sometimes
+    referred to as statements, carry out instructions such as
+    setting a condition to be met before processing continues, or
+    initializing an array. These commands are the smallest
+    individual instructions that can be executed by Discern Explorer.
+*)
+
+rdb_command =
+    'ALTER' |
+    'COMMENT' |
+    'COMMIT' |
+    'CREATE' |
+    'DECLARE' |
+    'DELETE' |
+    'DROP' |
+    'EXECUTE' |
+    'MERGE' |
+    'GRANT' |
+    'INSERT' |
+    'PRINT' |
+    'REVOKE' |
+    'ROLLBACK' |
+    'SELECT' |
+    'SET' |
+    'UPDATE'
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/SQL+Commands+using+Discern+Explorer *)
+sql_command =
+    select_command |
+    update_command |
+    insert_command |
+    delete_command |
+    define_command
+;
+
+(*
+Clause:
+    Individual instructions that clarify a command, such as
+    identifying the file from which information is extracted or
+    indicating whether information is displayed on a terminal or
+    sent to a printer.
+*)
+
+(* DISTINCT Clause *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Omitting+Duplicate+Information+With+Distinct+using+Discern+Explorer *)
+(* DISTINCT can be applied at the Discern Explorer level or at the RDBMS level *)
+(* At the RDBMS level, all items in the selection list are used to filter out duplicate records *)
+(* At the Discern Explorer level, only items in the ORDER clause are used to filter out duplicate records *)
+(* RDBMS level is used when only RDBMS tables appear in the query and no other criteria is found *)
+(* Discern Explorer level is used when a non-RDBMS table, such as DUMMYT, appears in the query *)
+(* Discern Explorer level is used when the ORDER clause includes an expression *)
+(* Discern Explorer level is used when the WITH clause includes MEMSORT or FILESORT *)
+(* Discern Explorer level is used when the ORDER clause ends with "0" *)
+distinct_clause = 'DISTINCT';
+
+(* INTO Clause *)
+(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Directing+Output+Using+the+INTO+Option+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+INTO+MINE+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+INTO+file_name+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+INTO+printer_name+using+Discern+Explorer *)
+(* See select_into_table_statement below for SELECT INTO TABLE option *)
+into_clause = 'INTO' output_device;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Output+Device+Control+in+Discern+Prompt+Library *)
+output_device = 'CRT' | 'CURDIO' | filename | 'FORMS' | 'MINE' | 'NOFORMS' | 'NL:' | printer_queue_name | 'TRIM' '(' expression ')';
+
+(* FROM Clause *)
+(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+using+Discern+Explorer *)
+from_clause =
+    'FROM'
+    table_name [alias]
+    {',' table_name [alias]}
+    {',' '(' [('FULL'|'LEFT'|'RIGHT'|'INNER') 'JOIN'] table_name [alias] ['ON' qualification] ')'}
+    { [select_inline_table] }
+;
+
+(* WHERE Clause *)
+(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+using+Discern+Explorer *)
+where_clause = 'WHERE' qualification;
+
+(* https://wiki.cerner.com/display/1101discernHP/Types+of+Qualifications+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Qualifiers+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Using+a+SUBQUERY+using+Discern+Explorer *)
+(*   A subquery provides multiple values for a qualification, like
+     using an 'IN' operator with a list of constant values.
+     Examples only show a subquery qualification using '=', although
+     the BNF-like grammar uses relational_operator (which includes
+     additional comparison operators) and experience shows that
+     Discern Explorer will accept 'IN' as a replacement for '='
+*)
+(* https://wiki.cerner.com/display/public/1101discernHP/NOT+EXISTS+using+Discern+Explorer *)
+(*   The documentation only shows "NOT EXISTS", but in actual
+     practice (include Cerner-developed programs), "EXISTS"
+     is also used
+*)
+qualification =
+    '(' qualification ')' |
+    'NOT' qualification |
+    qualification 'AND' qualification |
+    qualification 'OR' qualification |
+    expression relational_operator expression |
+    expression relational_operator '(' subquery_select_command ')' |
+    expression 'BETWEEN' expression 'AND' expression |
+    expression 'IN' '(' expression {',' expression} ')' |
+    [ 'NOT' ] 'EXISTS' '(' subquery_select_command ')'
+;
+index_qualification =
+    table_name.column_name '=' constant |
+    table_name.column_name '>' constant |
+    table_name.column_name '>=' constant |
+    table_name.column_name 'BETWEEN' constant 'AND' constant |
+    table_name.column_name '=' expression |
+    table_name.column_name '>' expression [    'AND' table_name.column_name '<' expression ] |
+    table_name.column_name '>=' expression [ 'AND' table_name.column_name '<=' expression ] |
+    table_name.column_name 'BETWEEN' expression 'AND' expression |
+    table_name.column_name 'IN' '(' expression {',' expression} ')'
+;
+join_qualification =
+    column_name '=' column_name |
+    alias.column_name '=' alias.column_name |
+    alias.column_name '<' expression [ 'AND' alias.column_name '>' expression ] |
+    alias.column_name '<=' expression [ 'AND' alias.column_name '>=' expression ] |
+    table_name.column_name '=' table_name.column_name |
+    table_name.column_name '<' expression [ 'AND' table_name.column_name '>' expression ] |
+    table_name.column_name '<=' expression [ 'AND' table_name.column_name '>=' expression ] |
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/OUTERJOIN%28+%29+Using+Discern+Explorer *)
+(* An OUTERJOIN() expression can only be used in a WHERE-clause qualification *)
+outerjoin_expression =
+    'OUTERJOIN' '(' expression ')'
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Using+a+SUBQUERY+using+Discern+Explorer *)
+(* A subquery provides values for a WHERE clause qualification *)
+(* A subquery cannot use the PLAN/JOIN logic; only a WHERE clause *)
+(* Since a subquery provides a list of values, only a single
+   select_expression is needed; both a column_name and display_options
+   would also be superfluous *)
+(* Since a subquery provides a list of values, an ORDER clause would be superfluous *)
+(* It's unclear whether a GROUP BY/HAVING clause is needed/allowed *)
+(* None of the ReportWriter clauses are allowed in a subquery *)
+(* It's unclear whether a WITH clause is needed/allowed *)
+subquery_select_command =
+    'SELECT'
+    select_expression
+    [from_clause]
+    [where_clause]
+;
+
+(* PLAN/JOIN Clauses *)
+(* https://wiki.cerner.com/display/public/1101discernHP/PLANS+and+JOINS+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Multiple+Table+JOINS+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Additional+JOIN+Examples+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Joining+to+a+Table+Twice+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/JOIN+Options+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Creating+a+Nonlinear+JOIN+Path+using+Discern+Explorer *)
+range = table_name | alias;
+plan_join_clause =
+    plan_clause { join_clause }
+;
+plan_clause =
+    'PLAN' range [ where_clause ] |
+    'PLAN' '(' range [ where_clause ] { join_clause } ')'
+;
+join_clause =
+    ('JOIN' | 'ORJOIN') range [ where_clause ] |
+    ('JOIN' | 'ORJOIN') '(' range [ where_clause ] {join_clause} ')'
+;
+(*
+    When using ORJOIN with RDBMS tables, use two DUMMYT tables;
+    one after the primary table and one before the table which
+    is the logical ORJOIN
+
+    Example:
+        PLAN o
+        JOIN (d1 JOIN oc WHERE oc.order_id = o.order_id)
+        ORJOIN (d2 JOIN r WHERE r.order_id = o.order_id)
+*)
+
+(* GROUP BY/HAVING Clauses *)
+(* https://wiki.cerner.com/display/public/1101discernHP/GROUP+BY+Clause+in+Discern+Explorer *)
+(* Used in combination with aggregate functions to group rows of data into summary information *)
+(* When using a GROUP BY clause, select_expression should be constant, aggregate_functions, or expressions from the GROUP BY clause *)
+(* Question: Can GROUP BY include more than one expression? *)
+(* https://wiki.cerner.com/display/public/1101discernHP/HAVING+Clause+in+Discern+Explorer *)
+(* HAVING is used with a GROUP BY clause to further restrict the groups returned by the GROUP BY clause *)
+group_by_clause =
+    'GROUP' 'BY' expression
+    [ 'HAVING' condition ]
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Organizing+Output+Using+the+ORDER+Clause+Using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Subsorts+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Sorting+on+User-Defined+Variables+using+Discern+Explorer *)
+order_clause =
+    'ORDER'
+    select_expression ['DESC']
+    {',' select_expression ['DESC']}
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+Using+Discern+Explorer *)
+select_inline_table =
+    'SELECT'
+    select_expression [display_options]
+    {',' select_expression [display_options]}
+    [from_clause]
+    [where_clause]
+    [select_option_clause]
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+INTO+TABLE+Table_Name+Using+Discern+Explorer *)
+select_into_table_statement =
+    'SELECT'
+    [distinct_clause]
+    'INTO' 'TABLE' table_name
+    select_expression [display_options]
+    {',' select_expression [display_options]}
+    {',' olap_expression}
+    [from_clause]
+    [ where_clause | plan_clause ]
+    [group_by_clause]
+    [having_clause]
+    [order_clause]
+    [ 'WITH' [(select_option | select_into_table_option) {',' (select_option | select_into_table_option)}]]
+;
+
+select_query_statement =
+    'SELECT'
+    [distinct_clause]
+    [into_clause]
+    select_expression [display_options]
+    {',' select_expression [display_options]}
+    {',' olap_expression}
+    [from_clause]
+    [ where_clause | plan_clause ]
+    [group_by_clause]
+    [having_clause]
+    [order_clause]
+    [select_option_clause]
+;
+
+(* select_if - https://wiki.cerner.com/display/public/1101discernHP/SELECT+IF+using+Discern+Explorer *)
+select_if_statement =
+    'SELECT'
+    'IF' '(' condition ')' {select_clause}
+    ['ELSEIF' '(' condition ')' {select_clause}]
+    'ELSE' {select_clause}
+    'ENDIF'
+    [{select_clause}]
+;
+
+(* select_reportwriter - https://wiki.cerner.com/display/public/1101discernHP/SELECT+Reportwriter+using+Discern+Explorer *)
+select_report_statement =
+    'SELECT'
+    [distinct_clause]
+    [into_clause]
+    select_expression [display_options]
+    {',' select_expression [display_options]}
+    {',' olap_expression}
+    [from_clause]
+    [ where_clause | plan_clause ]
+    [group_by_clause]
+    [having_clause]
+    [order_clause]
+
+    ['HEAD REPORT', report_item , {report_item} ]
+    ['HEAD PAGE', report_item , {report_item} ]
+    ['HEAD', group_expression , report_item , {report_item} ]
+    ['DETAIL', report_item , {report_item} ]
+    ['FOOT', group_expression , report_item , {report_item} ]
+    ['FOOT PAGE', report_item , {report_item} ]
+    ['FOOT REPORT', report_item , {report_item} ]
+
+    [select_option_clause]
+;
+
+report_item =
+    aggregate_expression |
+    call_trace_function |
+    call_center_function |
+    call_print_function |
+    call_debug_function |
+    call_echo_function |
+    call_text_function
+    call_uar |
+    call_sql_function |
+    call_subroutine |
+    break_command |
+    declare_command |
+    if_command |
+    case_command |
+    for_command |
+    while_command |
+    macro_command |
+    row_command |
+    col_command
+    select_expression_assignment |
+    text |
+    variable
+;
+
+(* control_option - https://wiki.cerner.com/display/1101discernHP/Control+Options+using+Discern+Explorer *)
+select_option_clause =
+    'WITH'
+    select_option
+    {',' select_option}
+;
+
+(*
+    In environments using Oracle 11 or higher, the PIVOT control option
+    can be used with select_inline_table to create cross tab query output
+    which converts a collumn into one or more new columns.
+    This allows a (name,value) pair to be flattened into multiple columns
+    per row.
+
+    The datatype() function needs to set the column name and column type
+    for each column returned in the nested select using the pivot.
+
+    One column is created in the output for each value in the qualification.
+
+    aggregate - an aggregate function
+    qualifaction - a restriction on known values
+    column_name - a name to use as the column heading
+    column_name - a datatype to be used for the column (string value of datatype name, such as "f8" or "dq8")
+*)
+pivot_control_option =
+    'PIVOT' '('
+        aggregate 'WHERE' qualification ','
+        'SQLTYPE' '('
+            'datatype' '(' column_name ',' column_type ')'
+            {',' 'datatype' '(' column_name ',' column_type ')'}
+        ')'
+    ')'
+;
+

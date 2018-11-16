@@ -5,15 +5,85 @@ field_name = identifier; (* Name of a field in a given table *)
 
 (* https://wiki.cerner.com/display/public/1101discernHP/Expressions+using+Discern+Explorer *)
 expression =
-	alias '.' field_name |
-	table_name '.' field_name |
-	constant |
-	parameter |
-	variable |
-	array_name '[' dimension [',' dimension [',' dimension]] ']' |
-	record_name {'->' record_field_name} |
-	function '(' expression {',' expression} ')' |
-	'(' expression ')' |
-	'-' expression |
-	expression math_operator expression
+    alias '.' field_name |
+    table_name '.' field_name |
+    constant |
+    parameter |
+    variable |
+    array_name '[' dimension [',' dimension [',' dimension]] ']' |
+    record_name {'->' record_field_name} |
+    function '(' expression {',' expression} ')' |
+    '(' expression ')' |
+    '-' expression |
+    expression math_operator expression
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/Using+Aggregates+as+Select+Expressions+in+Discern+Explorer *)
+(* An aggregate function expression can only be used in a SELECT
+   statement which includes a GROUP BY clause *)
+aggregate_function_name = 'AVG' | 'COUNT' | 'MAX' | 'MIN' | 'MEDIAN' | 'PERCENT' | 'STDDEV' | 'SUM' | 'VARIANCE';
+aggregate_expression = aggregate_function_name '(' expression ['WHERE' qualifaction] ')';
+
+olap_expression
+    OnLine Analytical Processing (OLAP) expressions calculate an
+    aggregate value for a group of rows in the result set.
+    OLAP expressions are different from aggregate functions.
+    An aggregate function will return one row for each group.
+    An OLAP expression returns one value for each row in the group.
+    For example, the aggregate count() function would return a
+    total count for the group where an OLAP expression would
+    return a running count for the group.
+
+    name - the expression name that will be used as the column
+           heading for the value returned by the analytic function
+    param - a field or RDBMS expression that the analytic_function
+            will use a calculate a return value
+    expression - a RDBMS expression, typically a table alias and field name
+*)
+olap_expression =
+    name '=' analytic_function '(' [ param {',' param} ] ')'
+    'OVER' '('
+        ['PARTITION BY' expression {',' expression}]
+        'ORDER BY' expression ['DESC'] {',' expression ['DESC']}
+        ['RANGE'|'ROWS' ['BETWEEN' bound 'AND'] bound]
+    ')'
+;
+analytic_function = (
+    'AVG'|'COUNT'|'MAX'|'MIN'|'STDEV'|'SUM'|'VARIANCE'|
+    'RANK'|'DENSE_RANK'|'NTILE'|'CUME_DIST'|'PERCENT_RANK'|
+    'ROW_NUMBER'|'PERCENTILE_CONT'|'PERCENTILE_DISC'
+);
+bound = 'CURRENT_ROW' | 'UNBOUNDED' | integer 'PRECEDING' | integer 'FOLLOWING';
+
+(* https://wiki.cerner.com/display/public/1101discernHP/DECODE+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Creating+a+Nonlinear+JOIN+Path+using+Discern+Explorer *)
+(* A DECODE() expression can only be used in a SELECT statement which
+   includes an ORJOIN clause, which uses the DONTCARE or OUTERJOIN
+   control options, or which uses the OUTERJOIN() function *)
+decode_select_expression =
+    'DECODE' '('
+        (table_name|alias) '.' field_name ',' expression
+        {',' (table_name|alias) '.' field_name ',' expression}
+        [ expression ]
+    ')'
+;
+
+(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+Expressions+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/User-Defined+Select+Expression+using+Discern+Explorer *)
+(* When using a GROUP BY clause, select_expression should only use constants, aggregate_functions, or expressions from the GROUP BY clause *)
+column_name = identifier;
+select_expression =
+    [ column_name '=' ] (
+        [table '.'] '*' |
+        [table '.'] field_name |
+        parameter |
+        constant |
+        variable |
+        array_name '[' dimension [',' dimension [',' dimension]] ']' |
+        record_name {'->' record_field_name} |
+        function '(' expression {',' expression} ')' |
+        aggregate_expression |
+        conditional_statement |
+        expression [ math_operator expression ]
+    )
 ;

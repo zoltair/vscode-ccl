@@ -10,15 +10,16 @@ line_continues = '\' {EOL};
 
 (* Strings *)
 (* Strings can be delimited by: single-quotation mark, double-quotation mark, caret, tilde, or vertical line *)
-string =
-	'"' {any | escape_char | wildcard_char} '"' |
-	'"' {any | escape_char | wildcard_char} '"' |
-	'^' {any | escape_char | wildcard_char} '^' |
-	'~' {any | escape_char | wildcard_char} '~' |
-	'|' {any | escape_char | wildcard_char} '|'
-;
 wildcard_char = '?' | '*'; (* Match a single unknown character [?] or match zero-or-more unknown characters [*] *)
 escape_char = '\*' | '\?' | '\\'; (* Backslash followed by asterisk, question mark, or backslash *)
+string_content = {any | escape_char | wildcard_char};
+string =
+    '"' string_content '"' |
+    '"' string_content '"' |
+    '^' string_content '^' |
+    '~' string_content '~' |
+    '|' string_content '|'
+;
 
 (* Numbers *)
 integer = digit {digit} ['.w']; (* Optional trailing '.w' indicates W8 datatype *)
@@ -39,7 +40,8 @@ assign_operator = '=' | '+=' | '-=' | '/=' | '*=';
     IS and IS NOT are only shown with NULL as a value
         I'm unsure if IS and IS NOT are effectively interchangeable with '=' and '!='
     LIKE is only meant for string values which contain at least one wildcard character
-        LIKE is effectively interchangeable with '='
+        An '=' is automatically converted to 'LIKE' if any wildcard characters are found
+            in the right-hand side value
 *)
 relational_operator = '=' | '!=' | '>' | '<' | '<=' | '>=' | 'IS' ['NOT'] | 'LIKE';
 
@@ -76,9 +78,9 @@ record_item_type   = type_modifier (fix_char_type | var_char_type | int_type | f
 variable_data_type =               (fix_char_type | var_char_type | int_type | float_type | dt_tm_type |                            var_int_type);
 array_item_type    =               (fix_char_type |                 int_type | float_type | dt_tm_type |                            var_int_type);
 
-(* https://wiki.cerner.com/display/public/1101discernHP/SET+CURSCOPE+using+Discern+Explorer *)
-(* scope applies to variables, record structures, and subroutines *)
-scope =
+(* https://wiki.cerner.com/display/public/1101discernHP/SET+CURscope_declare_option+using+Discern+Explorer *)
+(* scope_declare_option applies to variables, record structures, and subroutines *)
+scope_declare_option =
     'PUBLIC' | 'PRIVATE' | 'PROTECT' | 'PRIVATEPROTECT'
 ;
 (* Variables *)
@@ -92,7 +94,7 @@ variable_declare_option =
     'CONSTANT' '(' expression {',' expression} ')' |
     'NOCONSTANT' '(' expression {',' expression} ')' |
     'PERSIST' | 'NOPERSIST' | 'PERSISTSCRIPT' |
-    scope
+    scope_declare_option
 ;
 
 (* Arrays *)
@@ -114,7 +116,7 @@ record_define =
         {level list_item '[' occurs ']'}
         {level field_item '=' record_item_type }
         {level field_item '[' occurs ']' '=' record_item_type}
-    ')' 'WITH' scope
+    ')' 'WITH' scope_declare_option
 ;
 
 (* Subroutines *)
@@ -129,7 +131,7 @@ sub_declare =
     [ 'WITH' sub_declare_option {',' sub_declare_option}]
 ;
 sub_declare_option =
-    'COPY' | scope
+    'COPY' | scope_declare_option
 ;
 sub_define =
     'SUBROUTINE' [namespace '::'] subroutine_name '(' sub_param {',' sub_param} ')' '=' variable_data_type

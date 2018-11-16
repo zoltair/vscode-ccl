@@ -1,8 +1,8 @@
 (* Directive *)
 (*
-	Single-line commands to perform a task other than one associated
-	with a query, such as editing a file, turning on/off the
-	journaling feature, or including another source code file
+    Single-line commands to perform a task other than one associated
+    with a query, such as editing a file, turning on/off the
+    journaling feature, or including another source code file
 *)
 
 (* https://wiki.cerner.com/display/public/1101discernHP/Using+Directives+in+Discern+Explorer *)
@@ -29,22 +29,22 @@ One parameter
     https://wiki.cerner.com/display/public/1101discernHP/Terminal+Using+Discern+Explorer
 *)
 cli_directive = '%' (
-	'banner'   | 'b' |
-	'clear'    | 'c' |
-	'display'  | 'd' |
-	'edit'     | 'e' |
-	'help'     | 'h' |
-	'include'  | 'i' |
-	'journal'  | 'j' |
-	'kedit'    | 'k' |
-	'ledit'    | 'l' |
-	'output'   | 'o' |
-	'print'    | 'p' |
-	'run'      | 'r' |
-	'show'     | 's' |
-	'terminal' | 't' |
-	'version'  | 'v' |
-	'z'
+    'banner'   | 'b' |
+    'clear'    | 'c' |
+    'display'  | 'd' |
+    'edit'     | 'e' |
+    'help'     | 'h' |
+    'include'  | 'i' |
+    'journal'  | 'j' |
+    'kedit'    | 'k' |
+    'ledit'    | 'l' |
+    'output'   | 'o' |
+    'print'    | 'p' |
+    'run'      | 'r' |
+    'show'     | 's' |
+    'terminal' | 't' |
+    'version'  | 'v' |
+    'z'
 );
 cli_dir_cmd = '$dir'; (* https://wiki.cerner.com/display/public/1101discernHP/DIR+using+Discern+Explorer *)
 cli_os_cmd  = '$' os_command; (* https://wiki.cerner.com/display/public/1101discernHP/OS+Command+using+Discern+Explorer *)

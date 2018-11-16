@@ -1,7 +1,12 @@
 range      = table_name | alias;
 table      = range;
 field      = [table '.'] field_name;
-pseudo_table = 'DUMMYT';
+
+(* Psuedo Tables and Columns *)
+(* https://wiki.cerner.com/display/public/1101discernHP/Using+the+DUMMYT+Table+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/DEFINE+using+Discern+Explorer *)
+(* https://wiki.cerner.com/display/public/1101discernHP/The+SEQ+Pseudo+Column+using+Discern+Explorer *)
+pseudo_table = ('DUMMYT'|'RTL'|'RTL2'|'RTL3');
 pseudo_field = 'SEQ';
 
 (* display_options   - https://wiki.cerner.com/display/public/1101discernHP/Display+Options+using+Discern+Explorer *)
@@ -10,95 +15,76 @@ pseudo_field = 'SEQ';
 (* display_format    - https://wiki.cerner.com/display/public/1101discernHP/Display+Format+using+Discern+Explorer *)
 display_options = '"' display_template ';' display_qualifier ';' , display_format '"';
 
-(*
-Command:
-    Initiates actions, such as extracting or displaying information
-	and creating or deleting a file. Certain commands, sometimes
-	referred to as statements, carry out instructions such as
-	setting a condition to be met before processing continues, or
-	initializing an array. These commands are the smallest
-	individual instructions that can be executed by Discern Explorer.
-*)
-
-(* https://wiki.cerner.com/display/public/1101discernHP/SQL+Commands+using+Discern+Explorer *)
-sql_command =
-	select_command |
-	update_command |
-	insert_command |
-	delete_command |
-	define_command
-;
-
 (* https://wiki.cerner.com/display/public/1101discernHP/Programming+Constructs+using+Discern+Explorer *)
 prog_command =
-	if_command |
-	case_command |
-	while_command |
-	for_command |
-	execute_command |
-	goto_command
+    if_command |
+    case_command |
+    while_command |
+    for_command |
+    execute_command |
+    goto_command
 ;
 
 (* https://wiki.cerner.com/display/public/1101discernHP/CALL+Commands+using+Discern+Explorer *)
 call_command =
-	call_accept_command |
-	call_box_command |
-	call_cancel_command |
-	call_center_command |
-	call_clear_command |
-	call_compile_command |
-	call_dcl_command |
-	call_debug_command |
-	call_echo_command |
-	call_echorecord_command |
-	call_echoxml_command |
-	call_edit_command |
-	call_line_command |
-	call_parser_command |
-	call_pause_command |
-	call_print_command |
-	call_printimage_command |
-	call_scrolldown_command |
-	call_scrollinit_command |
-	call_scrolltext_command |
-	call_scrollup_command |
-	call_text_command |
-	call_trace_command |
-	call_video_command
+    call_accept_command |
+    call_box_command |
+    call_cancel_command |
+    call_center_command |
+    call_clear_command |
+    call_compile_command |
+    call_dcl_command |
+    call_debug_command |
+    call_echo_command |
+    call_echorecord_command |
+    call_echoxml_command |
+    call_edit_command |
+    call_line_command |
+    call_parser_command |
+    call_pause_command |
+    call_print_command |
+    call_printimage_command |
+    call_scrolldown_command |
+    call_scrollinit_command |
+    call_scrolltext_command |
+    call_scrollup_command |
+    call_text_command |
+    call_trace_command |
+    call_video_command
 ;
 
 (* https://wiki.cerner.com/display/public/1101discernHP/SET+Commands+Using+Discern+Explorer *)
 set_command =
-	set_accept_command |
-	set_error_command |
-	set_spool_command |
-	set_break_command |
-	set_help_command |
-	set_trace_command |
-	set_compile_command |
-	set_home_command |
-	set_transaction_command |
-	set_curaccept_command |
-	set_logical_command |
-	set_type_command |
-	set_curalias_command |
-	set_maxcolwidth_command |
-	set_validate_command |
-	set_curhelp_command |
-	set_message_command |
-	set_variable_command |
-	set_curlocale_command |
-	set_modify_command |
-	set_views_command |
-	set_curscope_command |
-	set_priority_command |
-	set_warining_command |
-	set_dir_command |
-	set_row_command |
-	set_width_command |
-	set_doc_command |
-	set_source_command |
-	set_window_command
+    set_accept_command |
+    set_error_command |
+    set_spool_command |
+    set_break_command |
+    set_help_command |
+    set_trace_command |
+    set_compile_command |
+    set_home_command |
+    set_transaction_command |
+    set_curaccept_command |
+    set_logical_command |
+    set_type_command |
+    set_curalias_command |
+    set_maxcolwidth_command |
+    set_validate_command |
+    set_curhelp_command |
+    set_message_command |
+    set_variable_command |
+    set_curlocale_command |
+    set_modify_command |
+    set_views_command |
+    set_curscope_command |
+    set_priority_command |
+    set_warining_command |
+    set_dir_command |
+    set_row_command |
+    set_width_command |
+    set_doc_command |
+    set_source_command |
+    set_window_command
 ;
 
 (* https://wiki.cerner.com/display/1101discernHP/PARAMETER+using+Discern+Explorer *)
@@ -109,337 +95,23 @@ set_command =
 parameter = '$' digit {digit} | '$' identifier;
 parameter_function = 'PARAMETER' '(' paremeter_number ',' list_number ')';
 
-(*
-Clause:
-	Individual instructions that clarify a command, such as
-	identifying the file from which information is extracted or
-	indicating whether information is displayed on a terminal or
-	sent to a printer.
-*)
-
-(* DISTINCT Clause *)
-(* https://wiki.cerner.com/display/public/1101discernHP/Omitting+Duplicate+Information+With+Distinct+using+Discern+Explorer *)
-(* DISTINCT can be applied at the Discern Explorer level or at the RDBMS level *)
-(* At the RDBMS level, all items in the selection list are used to filter out duplicate records *)
-(* At the Discern Explorer level, only items in the ORDER clause are used to filter out duplicate records *)
-(* RDBMS level is used when only RDBMS tables appear in the query and no other criteria is found *)
-(* Discern Explorer level is used when a non-RDBMS table, such as DUMMYT, appears in the query *)
-(* Discern Explorer level is used when the ORDER clause includes an expression *)
-(* Discern Explorer level is used when the WITH clause includes MEMSORT or FILESORT *)
-(* Discern Explorer level is used when the ORDER clause ends with "0" *)
-distinct_clause = 'DISTINCT';
-
-(* INTO Clause *)
-(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+using+Discern+Explorer *)
-(* https://wiki.cerner.com/display/public/1101discernHP/Directing+Output+Using+the+INTO+Option+using+Discern+Explorer *)
-(* https://wiki.cerner.com/display/public/1101discernHP/Output+Device+Control+in+Discern+Prompt+Library *)
-(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+INTO+MINE+using+Discern+Explorer *)
-(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+INTO+file_name+using+Discern+Explorer *)
-(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+INTO+printer_name+using+Discern+Explorer *)
-(* See select_into_table_statement below for SELECT INTO TABLE option *)
-into_clause = 'INTO' output_device;
-output_device = 'CRT' | 'CURDIO' | filename | 'FORMS' | 'MINE' | 'NOFORMS' | 'NL:' | printer_queue_name | 'TRIM' '(' expression ')';
-
-(* FROM Clause *)
-from_clause =
-	'FROM'
-	table_name [alias]
-	{',' table_name [alias]}
-	{',' '(' ['FULL'|'LEFT'|'RIGHT'|'INNER' 'JOIN'] table_name [alias] ['ON' qualification] ')'}
-	{ [select_inline_table] }
-;
-
-(* WHERE Clause *)
-where_clause = 'WHERE' qualification;
-
-(* https://wiki.cerner.com/display/public/1101discernHP/Qualifiers+using+Discern+Explorer *)
-qualifier = 'AND' | 'OR' | 'NOT';
-
-(* https://wiki.cerner.com/display/1101discernHP/Types+of+Qualifications+using+Discern+Explorer *)
-index_qualification =
-	table_name.column_name '=' constant |
-	table_name.column_name '>' constant |
-	table_name.column_name '>=' constant |
-	table_name.column_name 'BETWEEN' constant 'AND' constant |
-	table_name.column_name '=' expression |
-	table_name.column_name '>' expression [	table_name.column_name '<' expression ] |
-	table_name.column_name '>=' expression [	table_name.column_name '<=' expression ] |
-	table_name.column_name 'BETWEEN' expression 'AND' expression |
-	table_name.column_name 'IN' '(' expression {',' expression} ')'
-;
-join_qualification =
-	column_name '=' column_name |
-	alias.column_name '=' alias.column_name |
-	alias.column_name '<' expression ['AND' alias.column_name '>' expression] |
-	alias.column_name '<=' expression ['AND' alias.column_name '>=' expression] |
-	table_name.column_name '=' table_name.column_name |
-	table_name.column_name '<' expression ['AND' table_name.column_name '>' expression] |
-	table_name.column_name '<=' expression ['AND' table_name.column_name '>=' expression] |
-;
-qualification =
-	'(' qualification ')' |
-	'NOT' qualification |
-	qualification 'AND' qualification |
-	qualification 'OR' qualification |
-	expression relational_operator expression {qualifier expression relational_operator expression} |
-	expression relational_operator subquery |
-	expression 'BETWEEN' expression 'AND' expression |
-	expression 'IN' '(' expression {',' expression} ')'
-;
-
-(* GROUP BY Clause*)
-(* https://wiki.cerner.com/display/public/1101discernHP/GROUP+BY+Clause+in+Discern+Explorer *)
-(* Used in combination with aggregate functions to group rows of data into summary information *)
-(* When using a GROUP BY clause, select_expression should be constants, aggregate functions, or expressions from the GROUP BY clause *)
-group_by_clause = 'GROUP' 'BY' expression;
-
-(* HAVING Clause *)
-(* https://wiki.cerner.com/display/public/1101discernHP/HAVING+Clause+in+Discern+Explorer *)
-(* Used with a GROUP BY clause to restrict the rows returned by the GROUP BY clause *)
-having_clause = 'HAVING' condition;
-
-(* plan_clause - https://wiki.cerner.com/display/public/1101discernHP/PLANS+and+JOINS+using+Discern+Explorer *)
-(* join_operator - https://wiki.cerner.com/display/public/1101discernHP/JOIN+Options+using+Discern+Explorer *)
-join_operator = ('JOIN' | 'ORJOIN');
-plan_clause =
-	'PLAN' range [where_clause]
-	{join_operator range [where_clause]}
-;
-(*
-	When using ORJOIN with RDBMS tables, use two DUMMYT tables;
-	one after the primary table and another before the table
-	which is the logical ORJOIN
-
-    Example:
-		PLAN o
-		JOIN (d1 JOIN oc WHERE oc.order_id = o.order_id)
-		ORJOIN (d2 JOIN r WHERE r.order_id = o.order_id)
-*)
-
-(* https://wiki.cerner.com/display/public/1101discernHP/Organizing+Output+Using+the+ORDER+Clause+Using+Discern+Explorer *)
-(* https://wiki.cerner.com/display/public/1101discernHP/Subsorts+using+Discern+Explorer *)
-(* https://wiki.cerner.com/display/public/1101discernHP/Sorting+on+User-Defined+Variables+using+Discern+Explorer *)
-order_clause =
-	'ORDER'
-	select_expression ['DESC']
-	{',' select_expression ['DESC']}
-;
-
 (* https://wiki.cerner.com/display/1101discernHP/Control+Options+using+Discern+Explorer *)
 (* https://wiki.cerner.com/display/public/1101discernHP/Defining+Control+Options+Using+the+WITH+Clause+using+Discern+Explorer *)
 control_option =
-	single_word_control_option |
-	function_control_option '(' param {',' param} ')' |
-	assign_control_option '=' expression
-;
-
-(* control_option - https://wiki.cerner.com/display/1101discernHP/Control+Options+using+Discern+Explorer *)
-select_option_clause =
-	'WITH'
-	select_option
-	{',' select_option}
-;
-
-(*
-    In environments using Oracle 11 or higher, the PIVOT control option
-	can be used with select_inline_table to create cross tab query output
-	which converts a collumn into one or more new columns.
-	This allows a (name,value) pair to be flattened into multiple columns
-	per row.
-
-	The datatype() function needs to set the column name and column type
-	for each column returned in the nested select using the pivot.
-
-	One column is created in the output for each value in the qualification.
-
-	aggregate - an aggregate function
-	qualifaction - a restriction on known values
-	column_name - a name to use as the column heading
-	column_name - a datatype to be used for the column (string value of datatype name, such as "f8" or "dq8")
-*)
-pivot_control_option =
-	'PIVOT' '('
-		aggregate 'WHERE' qualification ','
-		'SQLTYPE' '('
-			'datatype' '(' column_name ',' column_type ')'
-			{',' 'datatype' '(' column_name ',' column_type ')'}
-		')'
-	')'
-;
-
-(* select_expression - https://wiki.cerner.com/display/public/1101discernHP/SELECT+Expressions+using+Discern+Explorer *)
-(* user-defined select expression - https://wiki.cerner.com/display/public/1101discernHP/User-Defined+Select+Expression+using+Discern+Explorer *)
-select_expression =
-	[ column_name '=' ] (
-		[table '.'] '*' |
-		[table '.'] field_name |
-		parameter |
-		constant |
-		variable |
-		array_name '[' dimension [',' dimension [',' dimension]] ']' |
-		record_name {'->' record_field_name} |
-		function '(' expression {',' expression} ')' |
-		aggregate_expression |
-		conditional_statement |
-		expression [ math_operator expression ]
-	)
-;
-
-(* https://wiki.cerner.com/display/public/1101discernHP/Using+Aggregates+as+Select+Expressions+in+Discern+Explorer *)
-aggregate_expression = aggregate_function_name '(' expression ['WHERE' qualifaction] ')';
-aggregate_function_name = 'AVG' | 'COUNT' | 'MAX' | 'MIN' | 'MEDIAN' | 'PERCENT' | 'STDDEV' | 'SUM' | 'VARIANCE';
-
-(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+using+Discern+Explorer
-
-olap_expression
-	OnLine Analytical Processing (OLAP) expressions calculate an
-	aggregate value for a group of rows in the result set.
-	OLAP expressions are different from aggregate functions.
-	An aggregate function will return one row for each group.
-	An OLAP expression returns one value for each row in the group.
-	For example, the aggregate count() function would return a
-	total count for the group where an OLAP expression would
-	return a running count for the group.
-
-	name - the expression name that will be used as the column
-	       heading for the value returned by the analytic function
-	param - a field or RDBMS expression that the analytic_function
-	        will use a calculate a return value
-	expression - a RDBMS expression, typically a table alias and field name
-*)
-olap_expression =
-	name '=' analytic_function '(' [ param {',' param} ] ')'
-	'OVER' '('
-		['PARTITION BY' expression {',' expression}]
-		'ORDER BY' expression ['DESC'] {',' expression ['DESC']}
-		['RANGE'|'ROWS' ['BETWEEN' bound 'AND'] bound]
-	')'
-;
-analytic_function = (
-	'AVG'|'COUNT'|'MAX'|'MIN'|'STDEV'|'SUM'|'VARIANCE'|
-	'RANK'|'DENSE_RANK'|'NTILE'|'CUME_DIST'|'PERCENT_RANK'|
-	'ROW_NUMBER'|'PERCENTILE_CONT'|'PERCENTILE_DISC'
-);
-bound = 'CURRENT_ROW' | 'UNBOUNDED' | integer 'PRECEDING' | integer 'FOLLOWING';
-
-(* select_inline_table - https://wiki.cerner.com/display/public/1101discernHP/SELECT+Using+Discern+Explorer *)
-select_inline_table =
-	'SELECT'
-	select_expression [display_options]
-	{',' select_expression [display_options]}
-	[from_clause]
-	[where_clause]
-	[select_option_clause]
-;
-
-(* https://wiki.cerner.com/display/public/1101discernHP/SELECT+INTO+TABLE+Table_Name+Using+Discern+Explorer *)
-select_into_table_statement =
-	'SELECT'
-	[distinct_clause]
-	'INTO' 'TABLE' table_name
-	select_expression [display_options]
-	{',' select_expression [display_options]}
-	{',' olap_expression}
-	[from_clause]
-	[ where_clause | plan_clause ]
-	[group_by_clause]
-	[having_clause]
-	[order_clause]
-	[ 'WITH' [(select_option | select_into_table_option) {',' (select_option | select_into_table_option)}]]
-;
-
-select_nested_statement =
-	'SELECT'
-	select_expression
-	{',' select_expression}
-	[from_clause]
-	[where_clause]
-;
-
-select_query_statement =
-	'SELECT'
-	[distinct_clause]
-	[into_clause]
-	select_expression [display_options]
-	{',' select_expression [display_options]}
-	{',' olap_expression}
-	[from_clause]
-	[ where_clause | plan_clause ]
-	[group_by_clause]
-	[having_clause]
-	[order_clause]
-	[select_option_clause]
-;
-
-(* select_if - https://wiki.cerner.com/display/public/1101discernHP/SELECT+IF+using+Discern+Explorer *)
-select_if_statement =
-	'SELECT'
-	'IF' '(' condition ')' {select_clause}
-	['ELSEIF' '(' condition ')' {select_clause}]
-	'ELSE' {select_clause}
-	'ENDIF'
-	[{select_clause}]
-;
-
-(* select_reportwriter - https://wiki.cerner.com/display/public/1101discernHP/SELECT+Reportwriter+using+Discern+Explorer *)
-select_report_statement =
-	'SELECT'
-	[distinct_clause]
-	[into_clause]
-	select_expression [display_options]
-	{',' select_expression [display_options]}
-	{',' olap_expression}
-	[from_clause]
-	[ where_clause | plan_clause ]
-	[group_by_clause],
-	[having_clause],
-	[order_clause},
-
-	['HEAD REPORT', report_item , {report_item} ],
-	['HEAD PAGE', report_item , {report_item} ],
-	['HEAD', group_expression , report_item , {report_item} ],
-	['DETAIL', report_item , {report_item} ],
-	['FOOT', group_expression , report_item , {report_item} ],
-	['FOOT PAGE', report_item , {report_item} ]
-	['FOOT REPORT', report_item , {report_item} ]
-
-	[select_option_clause]
-;
-
-report_item =
-	aggregate_expression |
-	call_trace_function |
-	call_center_function |
-	call_print_function |
-	call_debug_function |
-	call_echo_function |
-	call_text_function
-	call_uar |
-	call_sql_function |
-	call_subroutine |
-	break_command |
-	declare_command |
-	if_command |
-	case_command |
-	for_command |
-	while_command |
-	macro_command |
-	row_command |
-	col_command
-	select_expression_assignment |
-	text |
-	variable
+    single_word_control_option |
+    function_control_option '(' param {',' param} ')' |
+    assign_control_option '=' expression
 ;
 
 (*
 Function:
-	Subroutines used in a Discern Explorer query to perform
-	specific tasks, such as calculating an average.
+    Subroutines used in a Discern Explorer query to perform
+    specific tasks, such as calculating an average.
 
 Run-time Library Routines:
-	Discern Explorer programs that can be accessed from a program
-	written in a different programming language (such as COBOL or C).
-	The Discern Explorer program functions as if it had been
-	accessed from the keyboard.
+    Discern Explorer programs that can be accessed from a program
+    written in a different programming language (such as COBOL or C).
+    The Discern Explorer program functions as if it had been
+    accessed from the keyboard.
 *)
 
