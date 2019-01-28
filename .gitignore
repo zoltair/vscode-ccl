@@ -1,3 +1,41 @@
-node_modules
+# Backup files
+~*
+*.bak
+*.tmp
+*.old
+
+# OS generated files
+ehthumbs.db
+Thumbs.db
+
+# Editor files
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
 *.vsix
-.vscode/settings.json
+.vs/
+.vscode/
+
+# ignore compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# ignore packaged files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# node/grunt dependency directories
+node_modules/
+
+# Exceptions
+!.vscode/launch.json
